@@ -1,0 +1,12 @@
+Räuberschach wird von zwei Personen gespielt, Spieler Schwarz und Spieler Weiß. Die Brettgröße beträgt wie beim normalen Schach 8x8; die Spalten werden mit Buchstaben, die Zeilen mit Nummern bezeichnet.
+
+Die Grundaufstellung entspricht dem des normalen Schachs. Jeder Spieler besitzt folglich 8 Bauern, 2 Türme, 2 Springer, 2 Läufer sowie eine Dame und einen König.
+
+Ziels des Spiels ist es, seine eigenen Figuren schneller als der andere Spieler zu verlieren. Der Spieler mit übrigen Figuren auf dem Feld hat verloren. Der König ist eine gewöhnliche Figur; sein Fall bestimmt nicht über den Ausgang des Spiels, im Gegensatz zum gewöhnlichen Schach.
+
+Weiß beginnt.
+Die Züge der Spieler stehen folglich unter Schlagzwang. Wenn der aktuelle Spieler eine gegnerische Figur schlagen kann, muss er dies auch tun.
+Falls ein Bauer die andere Seite des Spielfelds erreicht, darf er in jede beliebige Figur umgewandelt werden, inklusive einem König.
+Für den Fall, dass ein Spieler nicht mehr ziehen kann, aber noch Figuren besitzt, hat er gewonnen.
+
+Die Rochade entfällt.

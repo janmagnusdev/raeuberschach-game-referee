@@ -1,0 +1,26 @@
+@font-face {
+    font-family: Roboto Mono;
+    src: url(../fonts/robotomono-regular.ttf);
+}
+
+* {
+    -fx-font-family: 'Roboto Mono';
+}
+
+.menu {
+    -fx-background-radius: 30px;
+}
+
+.menu:hover, .menu-item:hover {
+    -fx-background-color: #ffbd45;
+}
+
+.button {
+    -fx-background-color: lightgray;
+}
+
+#BoardGrid {
+    -fx-border-style: solid;
+    -fx-border-color: black;
+    -fx-border-width: 2px;
+}
