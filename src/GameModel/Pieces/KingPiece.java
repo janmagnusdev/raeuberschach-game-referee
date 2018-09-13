@@ -13,77 +13,50 @@ public class KingPiece extends Piece {
         if (isWhite) {
             asciiRepresentationChar = 'k';
         } else {
-            asciiRepresentationChar ='K';
+            asciiRepresentationChar = 'K';
         }
     }
 
     @Override
     public boolean checkMove(@NotNull Move move, @NotNull Board board) {
-            //King can only move one field in each direction
-            if (move.getDestColumn() == move.getSourceColumn() && Math.abs(move.getDestRow() - move.getSourceRow()) == 1) {
-                //vertical movement
-                return !isPieceInWayVertical(move);
-            } else if (move.getDestRow() == move.getSourceRow() && Math.abs(move.getDestColumn() - move.getSourceColumn()) == 1) {
-                //horizontal movement
-                return !isPieceInWayHorizontal(move);
-            } else if (Math.abs(move.getSourceRow() - move.getDestRow()) == Math.abs(move.getSourceColumn() - move.getDestColumn()) && Math.abs(move.getDestColumn() - move.getSourceColumn()) == 1)  {
-                //diagonal movement
-                return !isPieceInWayDiagonal(move);
-            } else {
-                return false;
-            }
+        //King can only move one field in each direction
+        if (move.getDestColumn() == move.getSourceColumn() && Math.abs(move.getDestRow() - move.getSourceRow()) == 1) {
+            //vertical movement
+            return !isPieceInWayVertical(move);
+        } else if (move.getDestRow() == move.getSourceRow() && Math.abs(move.getDestColumn() - move.getSourceColumn()) == 1) {
+            //horizontal movement
+            return !isPieceInWayHorizontal(move);
+        } else if (Math.abs(move.getSourceRow() - move.getDestRow()) == Math.abs(move.getSourceColumn() - move.getDestColumn()) && Math.abs(move.getDestColumn() - move.getSourceColumn()) == 1) {
+            //diagonal movement
+            return !isPieceInWayDiagonal(move);
+        } else {
+            return false;
         }
+    }
 
     @Override
-    public ArrayList<Field> getPossibleFields() {
-        boolean enemyIsWhite = !this.getIsWhite();
+    public ArrayList<Field> getPossibleFields() { //TODO
         int selfRow = this.getBelongingField().getRowDesignation();
         int selfColumn = this.getBelongingField().getColumnDesignation();
-        Board board = this.getBelongingField().getBelongingBoard();
         ArrayList<Field> possibleFields = new ArrayList<>();
 
+        //Up
+        this.addPossibleFieldToArrayList(possibleFields, selfRow - 1, selfColumn);
+        //Up Right
+        this.addPossibleFieldToArrayList(possibleFields, selfRow - 1, selfColumn + 1);
+        //Right
+        this.addPossibleFieldToArrayList(possibleFields, selfRow, selfColumn + 1);
+        //Right Down
+        this.addPossibleFieldToArrayList(possibleFields, selfRow + 1, selfColumn + 1);
         //Down
-        if (selfRow < 7) {
-            if (checkFieldForEnemy(selfRow + 1, selfColumn, enemyIsWhite) || board.getFieldAtIndex(selfRow + 1,
-                    selfColumn).isEmpty()){
-                possibleFields.add(board.getFieldAtIndex(selfRow + 1, selfColumn));
-            } //Up
-        } else if (selfRow >= 1) {
-            if (checkFieldForEnemy(selfRow - 1, selfColumn, enemyIsWhite) || board.getFieldAtIndex(selfRow - 1,
-                    selfColumn).isEmpty()) {
-                possibleFields.add(board.getFieldAtIndex(selfRow - 1, selfColumn));
-            } //Right
-        } else if (selfColumn < 7) {
-            if (checkFieldForEnemy(selfRow, selfColumn + 1, enemyIsWhite) || board.getFieldAtIndex(selfRow,
-                    selfColumn + 1).isEmpty()) {
-                possibleFields.add(board.getFieldAtIndex(selfRow, selfColumn + 1));
-            } //Left
-        } else if (selfColumn >= 1) {
-            if (checkFieldForEnemy(selfRow, selfColumn - 1, enemyIsWhite) || board.getFieldAtIndex(selfRow,
-                    selfColumn - 1).isEmpty()) {
-                possibleFields.add(board.getFieldAtIndex(selfRow, selfColumn - 1));
-            } //Right Up
-        } else if (selfRow >= 1 && selfColumn < 7) {
-            if (checkFieldForEnemy(selfRow - 1, selfColumn + 1, enemyIsWhite) || board.getFieldAtIndex(selfRow - 1,
-                    selfColumn + 1).isEmpty()) {
-                possibleFields.add(board.getFieldAtIndex(selfRow - 1, selfColumn + 1));
-            } //Right Down
-        } else if (selfRow < 7 && selfColumn < 7) {
-            if (checkFieldForEnemy(selfRow + 1, selfColumn + 1, enemyIsWhite) || board.getFieldAtIndex(selfRow + 1,
-                    selfColumn + 1).isEmpty()) {
-                possibleFields.add(board.getFieldAtIndex(selfRow + 1, selfColumn + 1));
-            } //Left Down
-        } else if (selfRow < 7 && selfColumn >= 1) {
-            if (checkFieldForEnemy(selfRow + 1, selfColumn - 1, enemyIsWhite) || board.getFieldAtIndex(selfRow + 1,
-                    selfColumn - 1).isEmpty()) {
-                possibleFields.add(board.getFieldAtIndex(selfRow + 1, selfColumn - 1));
-            } //Left Up
-        } else if (selfRow >= 1 && selfColumn >= 1) {
-            if (checkFieldForEnemy(selfRow - 1, selfRow - 1, enemyIsWhite) || board.getFieldAtIndex(selfRow - 1,
-                    selfColumn - 1).isEmpty()) {
-                possibleFields.add(board.getFieldAtIndex(selfRow - 1, selfColumn - 1));
-            }
-        }
+        this.addPossibleFieldToArrayList(possibleFields, selfRow + 1, selfColumn);
+        //Left Down
+        this.addPossibleFieldToArrayList(possibleFields, selfRow + 1, selfColumn - 1);
+        //Left
+        this.addPossibleFieldToArrayList(possibleFields, selfRow, selfColumn - 1);
+        //Left Up
+        this.addPossibleFieldToArrayList(possibleFields, selfRow - 1, selfColumn - 1);
+
         return possibleFields;
     }
 
@@ -95,39 +68,39 @@ public class KingPiece extends Piece {
         Board board = this.getBelongingField().getBelongingBoard();
 
         //Down
-        if (selfRow < 7) {
-            if (checkFieldForEnemy(selfRow + 1, selfColumn, enemyIsWhite)) {
-                return true;
-            } //Up
-        } else if (selfRow >= 1) {
-            if (checkFieldForEnemy(selfRow - 1, selfColumn, enemyIsWhite)) {
-                return true;
-            } //Right
-        } else if (selfColumn < 7) {
-            if (checkFieldForEnemy(selfRow, selfColumn + 1, enemyIsWhite)) {
-                return true;
-            } //Left
-        } else if (selfColumn >= 1) {
-            if (checkFieldForEnemy(selfRow, selfColumn - 1, enemyIsWhite)) {
-                return true;
-            } //Right Up
-        } else if (selfRow >= 1 && selfColumn < 7) {
-            if (checkFieldForEnemy(selfRow - 1, selfColumn +1, enemyIsWhite)) {
-                return true;
-            } //Right Down
-        } else if (selfRow < 7 && selfColumn < 7) {
-            if (checkFieldForEnemy(selfRow + 1, selfColumn + 1, enemyIsWhite)) {
-                return true;
-            } //Left Down
-        } else if (selfRow < 7 && selfColumn >= 1) {
-            if (checkFieldForEnemy(selfRow + 1, selfColumn - 1, enemyIsWhite)) {
-                return true;
-            } //Left Up
-        } else if (selfRow >= 1 && selfColumn >= 1) {
-            if (checkFieldForEnemy(selfRow - 1, selfRow - 1, enemyIsWhite)) {
-                return true;
-            }
+        if (checkFieldForEnemy(selfRow + 1, selfColumn, enemyIsWhite)) {
+            return true;
         }
-        return false;
+        //Up
+        else if (checkFieldForEnemy(selfRow - 1, selfColumn, enemyIsWhite)) {
+            return true;
+        }
+        //Right
+        else if (checkFieldForEnemy(selfRow, selfColumn + 1, enemyIsWhite)) {
+            return true;
+        }
+        //Left
+        else if (checkFieldForEnemy(selfRow, selfColumn - 1, enemyIsWhite)) {
+            return true;
+        }
+        //Right Up
+        else if (checkFieldForEnemy(selfRow - 1, selfColumn + 1, enemyIsWhite)) {
+            return true;
+        }
+        //Right Down
+        else if (checkFieldForEnemy(selfRow + 1, selfColumn + 1, enemyIsWhite)) {
+            return true;
+        }
+        //Left Down
+        else if (checkFieldForEnemy(selfRow + 1, selfColumn - 1, enemyIsWhite)) {
+            return true;
+        }
+        //Left Up
+        else if (checkFieldForEnemy(selfRow - 1, selfRow - 1, enemyIsWhite)) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 }

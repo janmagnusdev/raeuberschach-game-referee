@@ -122,6 +122,20 @@ public abstract class Piece {
         return false;
     }
 
+    void addPossibleFieldToArrayList(ArrayList<Field> possibleFields, int i, int j) {
+        if (i >= 0 && i <= 7 && j >= 0 && j <= 7) {
+            if (!this.canStrikeEnemy()) {
+                if (this.getBelongingField().getBelongingBoard().getFieldAtIndex(i, j).isEmpty()) {
+                    possibleFields.add(this.getBelongingField().getBelongingBoard().getFieldAtIndex(i, j));
+                }
+            } else {
+                if (this.checkFieldForEnemy(i, j, !this.getIsWhite())) {
+                    possibleFields.add(this.getBelongingField().getBelongingBoard().getFieldAtIndex(i, j));
+                }
+            }
+        }
+    }
+
     //Getter and Setter
     public Field getBelongingField() {
         return belongingField;

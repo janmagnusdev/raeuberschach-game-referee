@@ -32,7 +32,7 @@ public class PawnPiece extends Piece {
                 return true;
             }
         } else if (!this.wasMoved && !canStrikeEnemy()) {
-            if ((move.getDestRow() - move.getSourceRow() == 2 * allowedDir || move.getDestRow() - move.getSourceRow() == allowedDir) && move.getDestColumn() == move.getSourceColumn()) {
+            if ((move.getDestRow() - move.getSourceRow() == 2 * allowedDir || move.getDestRow() - move.getSourceRow() == allowedDir) && move.getDestColumn() == move.getSourceColumn() && !checkFieldForEnemy(move.getDestRow(), move.getDestColumn(), !this.getIsWhite())) {
                 return true;
             }
         } else {
@@ -62,6 +62,7 @@ public class PawnPiece extends Piece {
         int allowedDir = this.getIsWhite() ? -1 : 1;
         if (!wasMoved && !canStrikeEnemy()) {
             if (board.getFieldAtIndex(this.getBelongingField().getRowDesignation() + dir * 2,
+                    this.getBelongingField().getColumnDesignation()).isEmpty() && board.getFieldAtIndex(this.getBelongingField().getRowDesignation() + dir,
                     this.getBelongingField().getColumnDesignation()).isEmpty()) {
                 possibleFields.add(board.getFieldAtIndex(this.getBelongingField().getRowDesignation() + dir * 2,
                         this.getBelongingField().getColumnDesignation()));

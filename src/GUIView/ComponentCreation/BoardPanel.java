@@ -69,18 +69,18 @@ public class BoardPanel extends Region {
         }
         if (activePiece != null) {
             gc.drawImage(ImageLoader.getInstance().loadPieceImage(fields[activePiece.getSrcField().getRowDesignation()][activePiece.getSrcField().getColumnDesignation()].getContentPiece()), activePiece.getX() - CELL_SIZE * 0.42, activePiece.getY() - CELL_SIZE * 0.42, CELL_SIZE * 0.85, CELL_SIZE * 0.85); //draws the pieceImage of the active piece where the mouse is
-            gc.setStroke(Color.BLUE);
+            gc.setStroke(Color.web("#00897b"));
             gc.setLineWidth(2.50);
             gc.strokeRect((activePiece.getSrcField().getColumnDesignation() + 1) * CELL_SIZE + 3,
                     (activePiece.getSrcField().getRowDesignation() + 1) * CELL_SIZE + 3, CELL_SIZE - 6,
                     CELL_SIZE - 6); //highlighting of source field of active piece, if there is one
-            gc.setStroke(Color.GREENYELLOW);
+            gc.setStroke(Color.web("#43a047"));
             for (Field field : activePiece.getSrcField().getContentPiece().getPossibleFields()) {
                 gc.strokeRect((field.getColumnDesignation() + 1) * CELL_SIZE + 3,
                         (field.getRowDesignation() + 1) * CELL_SIZE + 3, CELL_SIZE - 6,
                         CELL_SIZE - 6);
             }
-            gc.setStroke(Color.RED); //Noch falsches Feld rot markieren, falls dem so ist
+            gc.setStroke(Color.web("#ff3d00")); //Noch falsches Feld rot markieren, falls dem so ist TODO
             gc.setLineWidth(1.00);
         }
     }
