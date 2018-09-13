@@ -33,40 +33,31 @@ public class KnightPiece extends Piece {
         Board board = this.getBelongingField().getBelongingBoard();
         ArrayList<Field> possibleFields = new ArrayList<>();
 
-        //checkt im Uhrzeigersinn des Springers nach möglichen Zügen, startend bei 12 Uhr
-        if (this.checkFieldForEnemy(selfRow - 2, selfColumn + 1, enemyIsWhite) || board.getFieldAtIndex(selfRow - 2,
-                selfColumn + 1).isEmpty()) {
-            possibleFields.add(board.getFieldAtIndex(selfRow - 2, selfColumn + 1));
-        }
-        if (this.checkFieldForEnemy(selfRow - 1, selfColumn + 2, enemyIsWhite) || board.getFieldAtIndex(selfRow - 2,
-                selfColumn + 1).isEmpty()) {
-            possibleFields.add(board.getFieldAtIndex(selfRow - 1, selfColumn + 2));
-        }
-        if (this.checkFieldForEnemy(selfRow + 1, selfColumn + 2, enemyIsWhite) || board.getFieldAtIndex(selfRow - 2,
-                selfColumn + 1).isEmpty()) {
-            possibleFields.add(board.getFieldAtIndex(selfRow + 1, selfColumn + 2));
-        }
-        if (this.checkFieldForEnemy(selfRow + 2, selfColumn + 1, enemyIsWhite) || board.getFieldAtIndex(selfRow - 2,
-                selfColumn + 1).isEmpty()) {
-            possibleFields.add(board.getFieldAtIndex(selfRow + 2, selfColumn + 1));
-        }
-        if (this.checkFieldForEnemy(selfRow + 2, selfColumn - 1, enemyIsWhite) || board.getFieldAtIndex(selfRow - 2,
-                selfColumn + 1).isEmpty()) {
-            possibleFields.add(board.getFieldAtIndex(selfRow - 2, selfColumn - 1));
-        }
-        if (this.checkFieldForEnemy(selfRow + 1, selfColumn - 2, enemyIsWhite) || board.getFieldAtIndex(selfRow - 2,
-                selfColumn + 1).isEmpty()) {
-            possibleFields.add(board.getFieldAtIndex(selfRow + 1, selfColumn - 2));
-        }
-        if (this.checkFieldForEnemy(selfRow - 1, selfColumn - 2, enemyIsWhite) || board.getFieldAtIndex(selfRow - 2,
-                selfColumn + 1).isEmpty()) {
-            possibleFields.add(board.getFieldAtIndex(selfRow - 1, selfColumn - 2));
-        }
-        if (this.checkFieldForEnemy(selfRow - 2, selfColumn - 1, enemyIsWhite) || board.getFieldAtIndex(selfRow - 2,
-                selfColumn + 1).isEmpty()) {
-            possibleFields.add(board.getFieldAtIndex(selfRow - 2, selfColumn + 1));
-        }
+        //Im Uhrzeigersinn, beginnend bei 12 Uhr, mit dem Moveset des Knights
+        this.addPossibleFieldsToArrayList(possibleFields, selfRow - 2, selfColumn + 1);
+        this.addPossibleFieldsToArrayList(possibleFields, selfRow - 1, selfColumn + 2);
+        this.addPossibleFieldsToArrayList(possibleFields, selfRow + 1, selfColumn + 2);
+        this.addPossibleFieldsToArrayList(possibleFields, selfRow + 2, selfColumn + 1);
+        this.addPossibleFieldsToArrayList(possibleFields, selfRow + 2, selfColumn - 1);
+        this.addPossibleFieldsToArrayList(possibleFields, selfRow + 1, selfColumn - 2);
+        this.addPossibleFieldsToArrayList(possibleFields, selfRow - 1, selfColumn - 2);
+        this.addPossibleFieldsToArrayList(possibleFields, selfRow - 2, selfColumn - 1);
+
         return possibleFields;
+    }
+
+    private void addPossibleFieldsToArrayList(ArrayList<Field> possibleFields, int i, int j) {
+        if (i >= 0 && i <= 7 && j >= 0 && j <= 7) {
+            if (!this.canStrikeEnemy()) {
+                if (this.getBelongingField().getBelongingBoard().getFieldAtIndex(i, j).isEmpty()) {
+                    possibleFields.add(this.getBelongingField().getBelongingBoard().getFieldAtIndex(i, j));
+                }
+            } else {
+                if (this.checkFieldForEnemy(i, j, !this.getIsWhite())) {
+                    possibleFields.add(this.getBelongingField().getBelongingBoard().getFieldAtIndex(i, j));
+                }
+            }
+        }
     }
 
     @Override

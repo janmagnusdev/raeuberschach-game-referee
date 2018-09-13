@@ -27,7 +27,7 @@ public abstract class Piece {
 
     public abstract ArrayList<Field> getPossibleFields();
 
-    public void addPossibleFieldsDirectionToArray(ArrayList<Field> possibleFields, int dirRow, int dirColumn) {
+    void addPossibleFieldsDirectionToArray(ArrayList<Field> possibleFields, int dirRow, int dirColumn) {
         {
             int j = this.getBelongingField().getColumnDesignation() + dirColumn;
             for (int i = this.getBelongingField().getRowDesignation() + dirRow; (dirRow == 1 ? i < 8 : i >= 0) && (dirColumn == 1 ? j < 8 : j >= 0); i = i + dirRow,

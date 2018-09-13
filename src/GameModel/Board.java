@@ -25,6 +25,7 @@ public class Board {
                 isWhite = true;
             }
             for (int j = 0; j < fields[0].length; j++) {
+                fields[i][j].setContentPiece(null);
                 if (i == 0 || i == fields.length - 1) {
                     if (j == 0 || j == 7) {
                         fields[i][j].setContentPiece(new RookPiece(isWhite, fields[i][j]));
