@@ -3,4 +3,7 @@
 	<output-test url="file://$MODULE_DIR$/out/test/game-referee"/>
 	<exclude-output/>
 	<contentEntry url="file://$MODULE_DIR$"/>
+	<levels>
+		<level name="org.jetbrains:annotations:16.0.2" value="project"/>
+	</levels>
 </component>
