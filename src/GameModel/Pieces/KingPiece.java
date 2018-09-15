@@ -35,7 +35,7 @@ public class KingPiece extends Piece {
     }
 
     @Override
-    public ArrayList<Field> getPossibleFields() { //TODO
+    public ArrayList<Field> getPossibleFields() {
         int selfRow = this.getBelongingField().getRowDesignation();
         int selfColumn = this.getBelongingField().getColumnDesignation();
         ArrayList<Field> possibleFields = new ArrayList<>();

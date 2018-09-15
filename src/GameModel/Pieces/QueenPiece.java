@@ -64,7 +64,7 @@ public class QueenPiece extends Piece {
     }
 
     @Override
-    public boolean canStrikeEnemy() { //TODO
+    public boolean canStrikeEnemy() {
         boolean enemyIsWhite = !this.getIsWhite();
         int selfColumn = this.getBelongingField().getColumnDesignation();
         int selfRow = this.getBelongingField().getRowDesignation();

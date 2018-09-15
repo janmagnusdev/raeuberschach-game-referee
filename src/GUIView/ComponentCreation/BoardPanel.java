@@ -1,5 +1,6 @@
 package GUIView.ComponentCreation;
 
+import GameModel.Move;
 import assets.IO;
 import GUIView.ActivePiece;
 import GUIView.ImageLoader;
@@ -10,6 +11,10 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
+import org.jetbrains.annotations.Nullable;
+
+import javax.lang.model.element.ModuleElement;
+import java.util.concurrent.TimeUnit;
 
 public class BoardPanel extends Region {
     ActivePiece activePiece;
@@ -39,7 +44,7 @@ public class BoardPanel extends Region {
         this.offset = offset;
     }
 
-    public void paintState() {
+    public void paintState(@Nullable Move move) {
         GraphicsContext gc = canvas.getGraphicsContext2D();
         gc.setStroke(Color.BLACK);
 
@@ -83,6 +88,29 @@ public class BoardPanel extends Region {
             gc.setStroke(Color.web("#ff3d00")); //Noch falsches Feld rot markieren, falls dem so ist TODO
             gc.setLineWidth(1.00);
         }
+        if (move != null) {
+            this.paintMoveAnimation((move.getSourceColumn() + 1) * CELL_SIZE,
+                    (move.getSourceRow() + 1) * CELL_SIZE, (move.getDestColumn() + 1) * CELL_SIZE,
+                    (move.getDestRow() + 1) * CELL_SIZE + CELL_SIZE, this);
+        }
+    }
+
+    private void paintMoveAnimation(int fromX, int fromY, int toX, int toY, BoardPanel boardPanel) { //TODO
+        GraphicsContext gc = boardPanel.getCanvas().getGraphicsContext2D();
+
+        while (fromX != toX && fromY != toY) {
+            boardPanel.update(null);
+            gc.drawImage(ImageLoader.getInstance().loadPieceImage(fields[(int) (fromY / CELL_SIZE - 1)][(int) (fromX / CELL_SIZE - 1)].getContentPiece()), fromX, fromY,
+                    CELL_SIZE * 0.85, CELL_SIZE * 0.85);
+            fromX++;
+            fromY++;
+            try {
+                TimeUnit.MILLISECONDS.sleep(20);
+            } catch (Exception e) {
+
+            }
+        }
+
     }
 
     //Getter and Setter
@@ -98,11 +126,11 @@ public class BoardPanel extends Region {
         this.activePiece = activePiece;
     }
 
-    public void update() {
+    public void update(@Nullable Move move) {
         canvas.getGraphicsContext2D().setStroke(Color.WHITE);
         canvas.getGraphicsContext2D().clearRect(0, 0, CELL_SIZE * (fields.length + 1),
                 CELL_SIZE * (fields[0].length + 1));
-        this.paintState();
+        this.paintState(move);
         IO.println("Log: Updated BoardPanel");
     }
 

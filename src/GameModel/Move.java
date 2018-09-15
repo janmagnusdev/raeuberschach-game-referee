@@ -1,12 +1,12 @@
 package GameModel;
 
 public class Move {
-    private final int sourceColumn; //war vorher statt source = from und statt dest = to
+    private final int sourceColumn;
     private final int sourceRow;
     private final int destColumn;
     private final int destRow;
 
-    public Move (int sourceColumn, int sourceRow, int destColumn, int destRow) {
+    public Move (int sourceColumn, int sourceRow, int destColumn, int destRow) { // j an erster Stelle, i an zweiter!
         this.sourceColumn = sourceColumn - 'a';
         this.sourceRow = sourceRow;
         this.destColumn = destColumn - 'a';

@@ -3,7 +3,11 @@ package GameModel;
 import assets.IO;
 import org.jetbrains.annotations.NotNull;
 
-public class Game { //Puts a whole game with all its components together
+import java.util.Observable;
+import java.util.Observer;
+import java.util.concurrent.TimeUnit;
+
+public class Game extends Observable { //Puts a whole game with all its components together
     private Board board;
     private Referee referee;
     private int turnNumber;
@@ -17,10 +21,34 @@ public class Game { //Puts a whole game with all its components together
         this.turnNumber = 1;
     }
 
+    public synchronized void startDummyDummyGame(Game game) {
+        new Thread() {
+            @Override
+            public void run() {
+                game.white = new DummyPlayer(true, game.getBoard());
+                game.black = new DummyPlayer(false, game.getBoard());
+                game.currentPlayer = game.white;
+                while (!checkEndingByPieces(game.getBoard().getFields())) {
+                    Move nextMove = game.currentPlayer.getNextMove(null);
+                    while (game.board.getFieldAtIndex(nextMove.getSourceRow(), nextMove.getSourceColumn()).isEmpty()) {
+                        nextMove = game.currentPlayer.getNextMove(null);
+                    }
+                    game.setChanged();
+                    notifyObservers(nextMove);
+                    try {
+                        TimeUnit.SECONDS.sleep(1);
+                    } catch (Exception e) {
+
+                    }
+                }
+            }
+        }.start();
+    }
+
     public void startGameAscii() {
         System.out.print("Weiß beginnt, Schwarz gewinnt! Let it rip!\n\n");
-        Player white = new AsciiPlayer(true);
-        Player black = new AsciiPlayer(false);
+        white = new AsciiPlayer(true);
+        black = new AsciiPlayer(false);
         currentPlayer = white;
         Move nextMove;
         for (; ; ) {
