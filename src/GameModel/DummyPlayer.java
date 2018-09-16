@@ -19,14 +19,30 @@ public class DummyPlayer extends Player {
 
     private Move possibleRandomMove(Board board) { //TODO
         ArrayList<Move> possibleMovesAllBelongingPieces = new ArrayList<>();
-        for (int i = 0; i < board.getFields().length; i++) {
-            for (int j = 0; j < board.getFieldAtIndex(0).length; j++) {
-                if (!board.getFieldAtIndex(i, j).isEmpty()) {
-                    if (board.getFieldAtIndex(i, j).getContentPiece().getIsWhite() == this.isWhite()) {
-                        for (Field field : board.getFieldAtIndex(i, j).getContentPiece().getPossibleFields()
-                        ) {
-                            possibleMovesAllBelongingPieces.add(new Move(j + 'a', i, field.getColumnDesignation() + 'a',
-                                    field.getRowDesignation()));
+        if (this.canStrikeEnemy(board)) {
+            for (int i = 0; i < board.getFields().length; i++) {
+                for (int j = 0; j < board.getFieldAtIndex(0).length; j++) {
+                    if(!board.getFieldAtIndex(i, j).isEmpty()) {
+                        if (board.getFieldAtIndex(i, j).getContentPiece().getIsWhite() == this.isWhite() && board.getFieldAtIndex(i, j).getContentPiece().canStrikeEnemy()) {
+                            for (Field field : board.getFieldAtIndex(i, j).getContentPiece().getPossibleFields()
+                            ) {
+                                possibleMovesAllBelongingPieces.add(new Move(j + 'a', i, field.getColumnDesignation() + 'a',
+                                        field.getRowDesignation()));
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            for (int i = 0; i < board.getFields().length; i++) {
+                for (int j = 0; j < board.getFieldAtIndex(0).length; j++) {
+                    if (!board.getFieldAtIndex(i, j).isEmpty()) {
+                        if (board.getFieldAtIndex(i, j).getContentPiece().getIsWhite() == this.isWhite()) {
+                            for (Field field : board.getFieldAtIndex(i, j).getContentPiece().getPossibleFields()
+                            ) {
+                                possibleMovesAllBelongingPieces.add(new Move(j + 'a', i, field.getColumnDesignation() + 'a',
+                                        field.getRowDesignation()));
+                            }
                         }
                     }
                 }

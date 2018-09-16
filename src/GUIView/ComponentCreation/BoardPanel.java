@@ -88,26 +88,22 @@ public class BoardPanel extends Region {
             gc.setStroke(Color.web("#ff3d00")); //Noch falsches Feld rot markieren, falls dem so ist TODO
             gc.setLineWidth(1.00);
         }
-        if (move != null) {
-            this.paintMoveAnimation((move.getSourceColumn() + 1) * CELL_SIZE,
-                    (move.getSourceRow() + 1) * CELL_SIZE, (move.getDestColumn() + 1) * CELL_SIZE,
-                    (move.getDestRow() + 1) * CELL_SIZE + CELL_SIZE, this);
-        }
+        /*if (move != null) {
+            this.paintMoveAnimation(move.getSourceColumn(), move.getSourceRow(), move.getDestColumn(), move.getDestColumn());
+        }*/
     }
 
-    private void paintMoveAnimation(int fromX, int fromY, int toX, int toY, BoardPanel boardPanel) { //TODO
-        GraphicsContext gc = boardPanel.getCanvas().getGraphicsContext2D();
+    private void paintMoveAnimation(int sourceColumn, int sourceRow, int destColumn, int destRow) { //TODO
+        GraphicsContext gc = this.getCanvas().getGraphicsContext2D();
 
-        while (fromX != toX && fromY != toY) {
-            boardPanel.update(null);
-            gc.drawImage(ImageLoader.getInstance().loadPieceImage(fields[(int) (fromY / CELL_SIZE - 1)][(int) (fromX / CELL_SIZE - 1)].getContentPiece()), fromX, fromY,
-                    CELL_SIZE * 0.85, CELL_SIZE * 0.85);
-            fromX++;
-            fromY++;
-            try {
-                TimeUnit.MILLISECONDS.sleep(20);
-            } catch (Exception e) {
-
+        int i = sourceRow;
+        for (int j = sourceColumn; j < destColumn && i < destRow; j++, i++) {
+            {
+                this.update(null);
+                int columnDir = sourceColumn < destColumn ? 1 : -1;
+                int rowDir = sourceRow < destRow ? 1 : -1;
+                gc.drawImage(ImageLoader.getInstance().loadPieceImage(fields[sourceRow][sourceColumn].getContentPiece()), (sourceColumn + 1 ) * CELL_SIZE, (sourceRow + 1) * CELL_SIZE,
+                        CELL_SIZE * 0.85, CELL_SIZE * 0.85);
             }
         }
 

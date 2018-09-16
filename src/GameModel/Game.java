@@ -1,6 +1,9 @@
 package GameModel;
 
+import GUIView.ComponentCreation.DisableButtonProperty;
 import assets.IO;
+import javafx.beans.value.ChangeListener;
+import javafx.scene.control.MenuItem;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Observable;
@@ -14,35 +17,44 @@ public class Game extends Observable { //Puts a whole game with all its componen
     private Player white = new HumanPlayer(true);
     private Player black = new HumanPlayer(false);
     private Player currentPlayer = white;
+    private boolean isActive;
+    private Thread dummyDummyGame;
+
 
     public Game(Board board) {
         this.board = board;
         this.referee = new Referee(this.board, this);
         this.turnNumber = 1;
+        this.isActive = false;
     }
 
     public synchronized void startDummyDummyGame(Game game) {
-        new Thread() {
-            @Override
-            public void run() {
-                game.white = new DummyPlayer(true, game.getBoard());
-                game.black = new DummyPlayer(false, game.getBoard());
-                game.currentPlayer = game.white;
-                while (!checkEndingByPieces(game.getBoard().getFields())) {
-                    Move nextMove = game.currentPlayer.getNextMove(null);
-                    while (game.board.getFieldAtIndex(nextMove.getSourceRow(), nextMove.getSourceColumn()).isEmpty()) {
-                        nextMove = game.currentPlayer.getNextMove(null);
-                    }
-                    game.setChanged();
-                    notifyObservers(nextMove);
-                    try {
-                        TimeUnit.SECONDS.sleep(1);
-                    } catch (Exception e) {
+        game.white = new DummyPlayer(true, game.getBoard());
+        game.black = new DummyPlayer(false, game.getBoard());
+        game.currentPlayer = game.white;
 
+        dummyDummyGame = new Thread() {
+            @Override
+            public synchronized void run() {
+                while (!this.isInterrupted()) {
+                    game.isActive = true;
+                    while (!checkEndingByPieces(game.getBoard().getFields())) {
+                        Move nextMove = game.currentPlayer.getNextMove(null);
+                        game.setChanged();
+                        notifyObservers(nextMove);
                     }
                 }
             }
-        }.start();
+        };
+        dummyDummyGame.start();
+    }
+
+    public void setDummyDummyGameOnWait() {
+        try {
+            this.dummyDummyGame.wait();
+        } catch (Exception e) {
+            IO.println("DummyDummyGame couldn't wait");
+        }
     }
 
     public void startGameAscii() {
@@ -110,6 +122,11 @@ public class Game extends Observable { //Puts a whole game with all its componen
     }
 
     //Getter and Setter
+
+    public Thread getDummyDummyGame() {
+        return dummyDummyGame;
+    }
+
     public Board getBoard() {
         return board;
     }
@@ -136,6 +153,10 @@ public class Game extends Observable { //Puts a whole game with all its componen
 
     public void setWhite(Player white) {
         this.white = white;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 
     public void setCurrentPlayer(Player currentPlayer) {

@@ -86,7 +86,7 @@ public class BoardEventHandler implements EventHandler<MouseEvent>, Observer {
 
     private void validateAndExecuteMove(Move move) {
         if (game.getReferee().checkMove(move, game.getCurrentPlayer())) {
-            IO.println("Move checked");
+            IO.println("checkMove() == true");
             if ((game.getCurrentPlayer().canStrikeEnemy(game.getBoard()) && game.getBoard().getFieldAtIndex(
                     move.getDestRow(), move.getDestColumn()).getContentPiece() == null)) {
 //                gameGUI.setLabelText((game.getCurrentPlayer().isWhite() ? "Weiß ist am Zug!" :
@@ -95,7 +95,6 @@ public class BoardEventHandler implements EventHandler<MouseEvent>, Observer {
                 game.getReferee().doMove(move);
                 game.setCurrentPlayer(game.getCurrentPlayer().isWhite() ? game.getBlack() : game.getWhite());
 //                gameGUI.setLabelText(game.getCurrentPlayer().isWhite() ? "Weiß ist am Zug!" : "Schwarz ist am Zug!");
-                IO.println("Du kannst eine gegnerische Figur schlagen!");
             }
         } else {
             IO.println("Log: Move ist nicht gültig");
@@ -119,7 +118,13 @@ public class BoardEventHandler implements EventHandler<MouseEvent>, Observer {
 
     @Override
     public void update(Observable o, Object arg) {
+        Game x = (Game) o;
         this.validateAndExecuteMove((Move) arg);
+        try {
+           x.getDummyDummyGame().sleep(1000);
+        } catch (Exception e) {
+
+        }
         boardPanel.update((Move) arg);
     }
 }

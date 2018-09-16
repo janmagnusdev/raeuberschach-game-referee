@@ -1,6 +1,9 @@
 package GUIView.ComponentCreation;
 
 import GUIView.GameGUI;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.*;
@@ -25,8 +28,54 @@ public class MenuBarGameReferee extends MenuBar {
         newGame.setOnAction(event -> parent.createCloneGui());
         MenuItem printGame = createMenuItem("_Print", "SHORTCUT + P", "/icons/print-menu-icon.png", null);
         MenuItem startGame = createMenuItem("St_art", "SHORTCUT + A", null, null);
-        startGame.setOnAction(event -> parent.getGame().startDummyDummyGame(parent.getGame()));
         MenuItem stopGame = createMenuItem("_Stop", "SHORTCUT + S", null, null);
+        stopGame.setDisable(true);
+
+        startGame.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public synchronized void handle(ActionEvent event) {
+                if (parent.getGame().getDummyDummyGame() == null) {
+                    parent.getGame().startDummyDummyGame(parent.getGame());
+                } else {
+                    if (parent.getGame().getDummyDummyGame().isInterrupted()) {
+                        parent.getGame().getDummyDummyGame().notify();
+                    }
+                }
+                startGame.setDisable(true);
+                stopGame.setDisable(false);
+            }
+        });
+
+        stopGame.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public synchronized void handle(ActionEvent event) {
+                try {
+                    parent.getGame().setDummyDummyGameOnWait();
+                } catch (Exception e) {
+
+                }
+                stopGame.setDisable(true);
+                startGame.setDisable(false);
+            }
+        });
+
+        /*DisableButtonProperty disableStartBean = new DisableButtonProperty();
+        disableStartBean.valueProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                startGame.setDisable(newValue);
+            }
+        });
+
+        DisableButtonProperty disableStopBean = new DisableButtonProperty();
+        disableStopBean.valueProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                stopGame.setDisable(newValue);
+
+            }
+        });*/
+
         MenuItem exitGame = createMenuItem("_Exit", "SHORTCUT + Q", null, null);
         exitGame.setOnAction(event -> parent.exitAllGUIs());
 
