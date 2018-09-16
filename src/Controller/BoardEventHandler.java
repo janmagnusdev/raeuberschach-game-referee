@@ -9,7 +9,10 @@ import GameModel.Move;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 
-public class BoardEventHandler implements EventHandler<MouseEvent> {
+import java.util.Observable;
+import java.util.Observer;
+
+public class BoardEventHandler implements EventHandler<MouseEvent>, Observer {
     private Game game; //durch Observable ersetzbar, sodass weniger Speicher verbraucht wird
     private GameGUI gameGUI;
 
@@ -19,6 +22,7 @@ public class BoardEventHandler implements EventHandler<MouseEvent> {
         this.game = game;
         this.gameGUI = gameGUI;
         boardPanel = gameGUI.getBoardPanel();
+        game.addObserver(this);
     }
 
     @Override
@@ -43,13 +47,13 @@ public class BoardEventHandler implements EventHandler<MouseEvent> {
                 activePiece.setSrcField(game.getBoard().getFieldAtIndex(calcIndex(event.getY()),
                         calcIndex(event.getX())));
                 boardPanel.setActivePiece(activePiece);
-            } else  {
+            } else {
                 boardPanel.setActivePiece(null);
             }
         } else {
             boardPanel.setActivePiece(null);
         }
-        boardPanel.update();
+        boardPanel.update(null);
     }
 
     public void actionOnMouseDragged(MouseEvent event) {
@@ -59,7 +63,7 @@ public class BoardEventHandler implements EventHandler<MouseEvent> {
             IO.println(boardPanel.getActivePiece().getX() + " Dragged Piece X value");
             IO.println(boardPanel.getActivePiece().getY() + " Dragged Piece Y value");
         }
-        boardPanel.update();
+        boardPanel.update(null);
     }
 
     public void actionOnMouseReleased(MouseEvent event) {
@@ -68,43 +72,54 @@ public class BoardEventHandler implements EventHandler<MouseEvent> {
                     boardPanel.getActivePiece().getSrcField().getRowDesignation(),
                     calcIndex(boardPanel.getActivePiece().getX()) + 'a',
                     calcIndex(boardPanel.getActivePiece().getY()));
-            boardPanel.setActivePiece(null);
             IO.print(move.getSourceColumn() + "\n" + move.getSourceRow() + "\n" + move.getDestColumn() + "\n" + move.getDestRow() + "\n");
             IO.println("Move erstellt");
-            if (game.getReferee().checkMove(move, game.getCurrentPlayer())) {
-                IO.println("Move checked");
-                if ((game.getCurrentPlayer().canStrikeEnemy(game.getBoard()) && game.getBoard().getFieldAtIndex(
-                        move.getDestRow(), move.getDestColumn()).getContentPiece() == null)) {
-                        gameGUI.setLabelText((game.getCurrentPlayer().isWhite() ? "Weiß ist am Zug!" :
-                            "Schwarz ist am Zug!") + " Du kannst eine gegnerische Figur schlagen!");
-                } else {
-                    game.getReferee().doMove(move);
-                    game.setCurrentPlayer(game.getCurrentPlayer().isWhite() ? game.getBlack() : game.getWhite());
-                    gameGUI.setLabelText(game.getCurrentPlayer().isWhite() ? "Weiß ist am Zug!" : "Schwarz ist am Zug!");
-                    IO.println("Du kannst eine gegnerische Figur schlagen!");
-                }
-            } else {
-                IO.println("Log: Move ist nicht gültig");
-                gameGUI.setLabelText((game.getCurrentPlayer().isWhite() ? "Weiß ist am Zug!" :
-                                "Schwarz ist am Zug!") + " Der Zug ist so nicht gültig!");
-            }
+            boardPanel.setActivePiece(null);
+            this.validateAndExecuteMove(move);
+            boardPanel.update(move);
         }
-        if (game.checkEndingByPieces(game.getBoard().getFields())) {
-            game.getBoard().setPiecesInitial();
-        }
-        boardPanel.update();
     }
 
     private boolean mouseIsInBoardRange(MouseEvent event) {
         return (event.getX() <= boardPanel.CELL_SIZE * 9 && event.getX() >= boardPanel.CELL_SIZE && event.getY() <= boardPanel.CELL_SIZE * 9 && event.getY() >= boardPanel.CELL_SIZE);
     }
 
+    private void validateAndExecuteMove(Move move) {
+        if (game.getReferee().checkMove(move, game.getCurrentPlayer())) {
+            IO.println("Move checked");
+            if ((game.getCurrentPlayer().canStrikeEnemy(game.getBoard()) && game.getBoard().getFieldAtIndex(
+                    move.getDestRow(), move.getDestColumn()).getContentPiece() == null)) {
+//                gameGUI.setLabelText((game.getCurrentPlayer().isWhite() ? "Weiß ist am Zug!" :
+//                        "Schwarz ist am Zug!") + " Du kannst eine gegnerische Figur schlagen!");
+            } else {
+                game.getReferee().doMove(move);
+                game.setCurrentPlayer(game.getCurrentPlayer().isWhite() ? game.getBlack() : game.getWhite());
+//                gameGUI.setLabelText(game.getCurrentPlayer().isWhite() ? "Weiß ist am Zug!" : "Schwarz ist am Zug!");
+                IO.println("Du kannst eine gegnerische Figur schlagen!");
+            }
+        } else {
+            IO.println("Log: Move ist nicht gültig");
+//            gameGUI.setLabelText((game.getCurrentPlayer().isWhite() ? "Weiß ist am Zug!" :
+//                    "Schwarz ist am Zug!") + " Der Zug ist so nicht gültig!");
+        }
+        if (game.checkEndingByPieces(game.getBoard().getFields())) {
+            game.getBoard().setPiecesInitial();
+        }
+    }
+
     /**
      * Berechnet aus einer übergebenen Koordinate einen gültigen Array-Index.
+     *
      * @param x Die übergebene Koordinate, ganz egal ob x oder y.
      * @return Der berechnete Index.
      */
-    public int calcIndex(Double x) {
+    private int calcIndex(Double x) {
         return ((int) ((x / boardPanel.CELL_SIZE) - 1));
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        this.validateAndExecuteMove((Move) arg);
+        boardPanel.update((Move) arg);
     }
 }

@@ -25,6 +25,7 @@ public class MenuBarGameReferee extends MenuBar {
         newGame.setOnAction(event -> parent.createCloneGui());
         MenuItem printGame = createMenuItem("_Print", "SHORTCUT + P", "/icons/print-menu-icon.png", null);
         MenuItem startGame = createMenuItem("St_art", "SHORTCUT + A", null, null);
+        startGame.setOnAction(event -> parent.getGame().startDummyDummyGame(parent.getGame()));
         MenuItem stopGame = createMenuItem("_Stop", "SHORTCUT + S", null, null);
         MenuItem exitGame = createMenuItem("_Exit", "SHORTCUT + Q", null, null);
         exitGame.setOnAction(event -> parent.exitAllGUIs());

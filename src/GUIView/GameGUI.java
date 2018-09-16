@@ -8,6 +8,7 @@ import GameModel.Board;
 import GameModel.Game;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -16,6 +17,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 public class GameGUI extends Application {
 
@@ -25,13 +27,14 @@ public class GameGUI extends Application {
 
     private BoardPanel boardPanel;
     private Label messageLabel;
+    private Game game;
 
     @Override
     public void start(Stage stage) throws Exception {
 
         BorderPane root = new BorderPane();
         Board board = new Board();
-        Game game = new Game(board);
+        game = new Game(board);
         boardPanel = new BoardPanel(game, 63, 0);
 
         ScrollPane gameScrollPane = new ScrollPane();
@@ -46,14 +49,21 @@ public class GameGUI extends Application {
         toolAndMenuBox.getChildren().addAll(new MenuBarGameReferee(this), new ToolBarCreation().createToolBar(this));
         toolAndMenuBox.setAlignment(Pos.CENTER);
         VBox.setVgrow(boardPanel, Priority.ALWAYS);
-        boardPanel.paintState();
+        boardPanel.paintState(null);
         root.setTop(toolAndMenuBox);
         root.setCenter(gameScrollPane);
         root.setBottom(messageLabel);
         //alle Komponenten des GUIs werden der Vbox in den oberen Zeile hinzugefügt. Die Methoden erstellen diese Komponenten zur Laufzeit.
         Scene primaryScene = new Scene(root);
 
-        stage.setTitle("GameGUI");
+        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent e) {
+                Platform.exit();
+                System.exit(0);
+            }
+        });
+        stage.setTitle("Räuberschach V2.01-//-02");
         stage.setMaxHeight(1000);
         stage.setMaxWidth(1000);
         stage.setScene(primaryScene);
@@ -89,5 +99,9 @@ public class GameGUI extends Application {
 
     public String getLabelText() {
         return messageLabel.getText();
+    }
+
+    public Game getGame() {
+        return game;
     }
 }

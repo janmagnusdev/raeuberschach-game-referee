@@ -17,16 +17,17 @@ public class DummyPlayer extends Player {
         return possibleRandomMove(board);
     }
 
-    private Move possibleRandomMove(Board board) { //am besten Methode für jedes Piece, welche alle möglichen Felder
-        // gibt, zu denen das Piece moven kann; bspw. auch in Bezug auf Spielbäume TODO
+    private Move possibleRandomMove(Board board) { //TODO
         ArrayList<Move> possibleMovesAllBelongingPieces = new ArrayList<>();
         for (int i = 0; i < board.getFields().length; i++) {
             for (int j = 0; j < board.getFieldAtIndex(0).length; j++) {
-                if (board.getFieldAtIndex(i, j).getContentPiece().getIsWhite() == this.isWhite()) {
-                    for (Field field : board.getFieldAtIndex(i, j).getContentPiece().getPossibleFields()
-                    ) {
-                        possibleMovesAllBelongingPieces.add(new Move(i + 'a', j, field.getColumnDesignation() + 'a',
-                                field.getRowDesignation()));
+                if (!board.getFieldAtIndex(i, j).isEmpty()) {
+                    if (board.getFieldAtIndex(i, j).getContentPiece().getIsWhite() == this.isWhite()) {
+                        for (Field field : board.getFieldAtIndex(i, j).getContentPiece().getPossibleFields()
+                        ) {
+                            possibleMovesAllBelongingPieces.add(new Move(j + 'a', i, field.getColumnDesignation() + 'a',
+                                    field.getRowDesignation()));
+                        }
                     }
                 }
             }

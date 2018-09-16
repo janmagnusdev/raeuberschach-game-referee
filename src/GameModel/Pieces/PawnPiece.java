@@ -58,6 +58,12 @@ public class PawnPiece extends Piece {
         int dir = this.getIsWhite() ? -1 : 1;
         ArrayList<Field> possibleFields = new ArrayList<>();
 
+        if (selfRow == 7 && dir == 1) {
+            dir = 0;
+        }
+        if (selfRow == 0 && dir == -1) {
+            dir = 0;
+        }
         wasMoved = (firstField != this.getBelongingField());
         int allowedDir = this.getIsWhite() ? -1 : 1;
         if (!wasMoved && !canStrikeEnemy()) {

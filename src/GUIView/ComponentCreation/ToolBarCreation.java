@@ -22,6 +22,7 @@ public class ToolBarCreation {
         Button playButton = new Button();
         Image playIcon = new Image("icons/play-icon.png");
         playButton.setGraphic(new ImageView(playIcon));
+        playButton.setOnAction(event -> parent.getGame().startDummyDummyGame(parent.getGame()));
         Button stopButton = new Button();
         Image recordIcon = new Image("icons/record-icon.png");
         stopButton.setGraphic(new ImageView(recordIcon));
