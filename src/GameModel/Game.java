@@ -17,15 +17,13 @@ public class Game extends Observable { //Puts a whole game with all its componen
     private Player white = new HumanPlayer(true);
     private Player black = new HumanPlayer(false);
     private Player currentPlayer = white;
-    private boolean isActive;
     private Thread dummyDummyGame;
-
+    private DisableButtonProperty gameActiveProperty;
 
     public Game(Board board) {
         this.board = board;
         this.referee = new Referee(this.board, this);
         this.turnNumber = 1;
-        this.isActive = false;
     }
 
     public synchronized void startDummyDummyGame(Game game) {
@@ -36,14 +34,14 @@ public class Game extends Observable { //Puts a whole game with all its componen
         dummyDummyGame = new Thread() {
             @Override
             public synchronized void run() {
-                while (!this.isInterrupted()) {
-                    game.isActive = true;
-                    while (!checkEndingByPieces(game.getBoard().getFields())) {
-                        Move nextMove = game.currentPlayer.getNextMove(null);
-                        game.setChanged();
-                        notifyObservers(nextMove);
+                while (!game.checkEndingByPieces(board.getFields())) {
+                    if(this.isInterrupted()) {
+                        break;
                     }
+                        game.setChanged();
+                        notifyObservers(game.currentPlayer.getNextMove(null));
                 }
+                dummyDummyGame = null;
             }
         };
         dummyDummyGame.start();
@@ -57,6 +55,7 @@ public class Game extends Observable { //Puts a whole game with all its componen
         }
     }
 
+    //region ASCII
     public void startGameAscii() {
         System.out.print("Weiß beginnt, Schwarz gewinnt! Let it rip!\n\n");
         white = new AsciiPlayer(true);
@@ -103,6 +102,7 @@ public class Game extends Observable { //Puts a whole game with all its componen
         }
         IO.println("\nDas Spiel ging " + turnNumber + " Züge!");
     }
+    //endregion
 
     public boolean checkEndingByPieces(@NotNull Field[][] fields) {
         boolean whiteHasPieces = false;
@@ -153,10 +153,6 @@ public class Game extends Observable { //Puts a whole game with all its componen
 
     public void setWhite(Player white) {
         this.white = white;
-    }
-
-    public void setActive(boolean active) {
-        isActive = active;
     }
 
     public void setCurrentPlayer(Player currentPlayer) {

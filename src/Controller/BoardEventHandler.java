@@ -104,6 +104,11 @@ public class BoardEventHandler implements EventHandler<MouseEvent>, Observer {
         if (game.checkEndingByPieces(game.getBoard().getFields())) {
             game.getBoard().setPiecesInitial();
         }
+        if (game.getDummyDummyGame() != null) {
+            if (game.getDummyDummyGame().isInterrupted()) {
+                game.getBoard().setPiecesInitial();
+            }
+        }
     }
 
     /**
