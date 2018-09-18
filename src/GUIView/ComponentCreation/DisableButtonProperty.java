@@ -3,7 +3,7 @@ package GUIView.ComponentCreation;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 
-public class DisableButtonProperty  {
+public class DisableButtonProperty  { // not used
     private BooleanProperty value = new SimpleBooleanProperty(this, "value", false);
 
     public void setValue(boolean value) {

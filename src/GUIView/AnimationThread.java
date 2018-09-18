@@ -1,10 +1,12 @@
 package GUIView;
 
-import GUIView.ComponentCreation.BoardPanel;
+import  GUIView.ComponentCreation.BoardPanel;
 import GameModel.Game;
 import GameModel.Move;
 import javafx.application.Platform;
 import javafx.scene.canvas.GraphicsContext;
+
+import java.util.concurrent.TimeUnit;
 
 public class AnimationThread extends Thread {
 
@@ -35,17 +37,24 @@ public class AnimationThread extends Thread {
             double incrementFactorY = Math.abs(y - (((double) move.getDestRow() + 1) * boardPanel.CELL_SIZE)) / animations;
             double incrementFactorX =
                     Math.abs(x - (((double) move.getDestColumn() + 1) * boardPanel.CELL_SIZE)) / animations;
-            ActivePiece animatedPiece = new ActivePiece((move.getSourceRow() + 1) * boardPanel.CELL_SIZE,
-                    (move.getSourceColumn() + 1) * boardPanel.CELL_SIZE);
+
+            ActivePiece animatedPiece = new ActivePiece((move.getSourceColumn() + 1) * boardPanel.CELL_SIZE,
+                    (move.getSourceRow() + 1) * boardPanel.CELL_SIZE);
             animatedPiece.setSrcField(boardPanel.getGame().getBoard().getFieldAtIndex(move.getSourceRow(), move.getSourceColumn()));
             boardPanel.setAnimatedPiece(animatedPiece);
 
 
             for (int z = 0; z < animations; z++) {
-                boardPanel.update(null);
+                Platform.runLater(() -> boardPanel.update(null));
                 boardPanel.getAnimatedPiece().setY(boardPanel.getAnimatedPiece().getY() + incrementFactorY * yDir);
                 boardPanel.getAnimatedPiece().setX(boardPanel.getAnimatedPiece().getX() + incrementFactorX * xDir);
+                try {
+                    Thread.sleep(50);
+                } catch (InterruptedException ex) {
+                    this.interrupt();
+                }
             }
+            boardPanel.setAnimatedPiece(null);
         }
     }
 }

@@ -1,10 +1,8 @@
 package GUIView.ComponentCreation;
 
-import GUIView.AnimationThread;
 import GameModel.Move;
-import assets.IO;
 import GUIView.ActivePiece;
-import GUIView.ImageLoader;
+import Loaders.ImageLoader;
 import GameModel.Board;
 import GameModel.Field;
 import GameModel.Game;
@@ -13,10 +11,6 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import org.jetbrains.annotations.Nullable;
-
-import javax.lang.model.element.ModuleElement;
-import java.lang.management.PlatformManagedObject;
-import java.util.concurrent.TimeUnit;
 
 public class BoardPanel extends Region {
     ActivePiece activePiece;
@@ -64,14 +58,51 @@ public class BoardPanel extends Region {
                 }
                 gc.fillRect(j * CELL_SIZE + CELL_SIZE + offset, i * CELL_SIZE + CELL_SIZE + offset, CELL_SIZE, CELL_SIZE);
                 gc.strokeRect(j * CELL_SIZE + CELL_SIZE + offset, i * CELL_SIZE + CELL_SIZE + offset, CELL_SIZE, CELL_SIZE);
-                if (activePiece == null) {
+
+                /*int val = 0; //Stackoverflow Solution: https://stackoverflow.com/questions/8850497/switch-case-request-with-boolean
+                if (activePiece != null) val |= 0x1;
+                if (animatedPiece != null) val |= 0x2;
+
+                switch (val) {
+                    case 0: // Both null
+                        if (!fields[i][j].isEmpty()) {
+                            gc.drawImage(ImageLoader.getInstance().loadPieceImage(fields[i][j].getContentPiece()), ((j + 1) * CELL_SIZE + 4), ((i + 1) * CELL_SIZE + 3), CELL_SIZE * 0.85, CELL_SIZE * 0.85);
+                        }
+                        break;
+                    case 1: // activePiece not null
+                        if (!fields[i][j].isEmpty() && !(i == activePiece.getSrcField().getRowDesignation() && j == activePiece.getSrcField().getColumnDesignation())) {
+                            gc.drawImage(ImageLoader.getInstance().loadPieceImage(fields[i][j].getContentPiece()), ((j + 1) * CELL_SIZE + 4), ((i + 1) * CELL_SIZE + 3), CELL_SIZE * 0.85, CELL_SIZE * 0.85);
+                        }
+                        break;
+                    case 2: // animatedPiece not null
+                        if (!fields[i][j].isEmpty() && !(i == animatedPiece.getSrcField().getRowDesignation() && j == animatedPiece.getSrcField().getColumnDesignation())) {
+                            gc.drawImage(ImageLoader.getInstance().loadPieceImage(fields[i][j].getContentPiece()), ((j + 1) * CELL_SIZE + 4), ((i + 1) * CELL_SIZE + 3), CELL_SIZE * 0.85, CELL_SIZE * 0.85);
+                        }
+                        break;
+                    case 3: // both not null
+                        if (!fields[i][j].isEmpty() && !(i == animatedPiece.getSrcField().getRowDesignation() && j == animatedPiece.getSrcField().getColumnDesignation()) && !(i == activePiece.getSrcField().getRowDesignation() && j == activePiece.getSrcField().getColumnDesignation())) {
+                            gc.drawImage(ImageLoader.getInstance().loadPieceImage(fields[i][j].getContentPiece()), ((j + 1) * CELL_SIZE + 4), ((i + 1) * CELL_SIZE + 3), CELL_SIZE * 0.85, CELL_SIZE * 0.85);
+                        }
+                        break;
+                }*/
+
+                if (activePiece == null && animatedPiece == null) {
                     if (!fields[i][j].isEmpty()) {
                         gc.drawImage(ImageLoader.getInstance().loadPieceImage(fields[i][j].getContentPiece()), ((j + 1) * CELL_SIZE + 4), ((i + 1) * CELL_SIZE + 3), CELL_SIZE * 0.85, CELL_SIZE * 0.85);
                     }
-                } else {
-                    if (!fields[i][j].isEmpty() && (i != activePiece.getSrcField().getRowDesignation() || j != activePiece.getSrcField().getColumnDesignation())) {
+                } else if (activePiece != null && animatedPiece == null){
+                    if (!fields[i][j].isEmpty() && !(i == activePiece.getSrcField().getRowDesignation() && j == activePiece.getSrcField().getColumnDesignation())) {
                         gc.drawImage(ImageLoader.getInstance().loadPieceImage(fields[i][j].getContentPiece()), ((j + 1) * CELL_SIZE + 4), ((i + 1) * CELL_SIZE + 3), CELL_SIZE * 0.85, CELL_SIZE * 0.85);
                     }
+                } else if (activePiece == null && animatedPiece != null) {
+                    if (!fields[i][j].isEmpty() && !(i == animatedPiece.getSrcField().getRowDesignation() && j == animatedPiece.getSrcField().getColumnDesignation())) {
+                        gc.drawImage(ImageLoader.getInstance().loadPieceImage(fields[i][j].getContentPiece()), ((j + 1) * CELL_SIZE + 4), ((i + 1) * CELL_SIZE + 3), CELL_SIZE * 0.85, CELL_SIZE * 0.85);
+                    }
+                } else {
+                    if (!fields[i][j].isEmpty() && !(i == animatedPiece.getSrcField().getRowDesignation() && j == animatedPiece.getSrcField().getColumnDesignation()) && !(i == activePiece.getSrcField().getRowDesignation() && j == activePiece.getSrcField().getColumnDesignation())) {
+                        gc.drawImage(ImageLoader.getInstance().loadPieceImage(fields[i][j].getContentPiece()), ((j + 1) * CELL_SIZE + 4), ((i + 1) * CELL_SIZE + 3), CELL_SIZE * 0.85, CELL_SIZE * 0.85);
+                    }
+
                 }
             }
         }
@@ -92,7 +123,7 @@ public class BoardPanel extends Region {
             gc.setLineWidth(1.00);
         }
         if (animatedPiece != null) {
-            gc.drawImage(ImageLoader.getInstance().loadPieceImage(board.getFieldAtIndex(animatedPiece.getSrcField().getRowDesignation(), animatedPiece.getSrcField().getColumnDesignation()).getContentPiece()), animatedPiece.getY(), animatedPiece.getX(), CELL_SIZE * 0.85, CELL_SIZE * 0.85);
+            gc.drawImage(ImageLoader.getInstance().loadPieceImage(board.getFieldAtIndex(animatedPiece.getSrcField().getRowDesignation(), animatedPiece.getSrcField().getColumnDesignation()).getContentPiece()), animatedPiece.getX() + 4, animatedPiece.getY() + 3, CELL_SIZE * 0.85, CELL_SIZE * 0.85);
         }
         /*if (move != null) {
             this.paintMoveAnimation(move.getSourceColumn(), move.getSourceRow(), move.getDestColumn(), move.getDestColumn());

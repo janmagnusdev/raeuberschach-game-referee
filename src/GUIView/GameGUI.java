@@ -23,12 +23,12 @@ import javafx.stage.WindowEvent;
 
 public class GameGUI extends Application {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) { //TODO Thread Safety!
         launch(args);
     }
 
     private BoardPanel boardPanel;
-    private Label messageLabel;
+    private Label messageLabel; //TODO Messages müssen noch angezeigt werden; bspw. "Weiß ist am Zug!".
     private Game game;
     private MenuBar menuBar;
     private ToolBar toolBar;

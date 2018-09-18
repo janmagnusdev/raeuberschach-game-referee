@@ -1,10 +1,13 @@
-package GameModel;
+package GameModel.Players;
+
+import GameModel.Board;
+import GameModel.Move;
 
 public abstract class Player {
-    protected boolean isAI;
+    boolean isAI;
     private boolean isWhite;
 
-    Player (boolean isWhite) {
+    public Player (boolean isWhite) {
         this.isWhite = isWhite;
     }
 

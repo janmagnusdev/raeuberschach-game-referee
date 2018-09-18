@@ -1,7 +1,10 @@
-package GameModel;
+package GameModel.Players;
+
+import GameModel.Board;
+import GameModel.Field;
+import GameModel.Move;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 public class DummyPlayer extends Player {
     private Board board;

@@ -125,19 +125,19 @@ public class BoardEventHandler implements EventHandler<MouseEvent>, Observer {
     @Override
     public void update(Observable o, Object arg) {
         Game x = (Game) o;
-        this.validateAndExecuteMove((Move) arg);
-        try {
-           x.getDummyDummyGame().sleep(1000);
-        } catch (InterruptedException e) {
-            x.getDummyDummyGame().interrupt();
-        }
-        boardPanel.update((Move) arg);
-        Thread animationThread = new AnimationThread(boardPanel, game, (Move) arg, 10);
+        Thread animationThread = new AnimationThread(boardPanel, game, (Move) arg, 10); // muss an die erste Stelle geschrieben werden, da sonst der timeout von gameThread
+        // ausläuft und somit die Ausführung der Animation durch aufrufen von notifyObervers() in GameThread niemals erreicht wird
         animationThread.start();
         try {
             animationThread.join();
         } catch (InterruptedException e) {
             game.getDummyDummyGame().interrupt();
+        }
+        this.validateAndExecuteMove((Move) arg);
+        try {
+           x.getDummyDummyGame().sleep(1000);
+        } catch (InterruptedException e) {
+            x.getDummyDummyGame().interrupt();
         }
     }
 }

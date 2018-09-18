@@ -1,5 +1,7 @@
 package GameModel;
 
+import GameModel.Players.Player;
+
 public class Referee {
     Board board;
     Game game;

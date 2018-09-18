@@ -1,10 +1,11 @@
-package GameModel;
+package GameModel.Players;
 
+import GameModel.Move;
 import assets.IO;
 
 public class AsciiPlayer extends Player {
 
-    AsciiPlayer(boolean playerIsWhite) {
+    public AsciiPlayer(boolean playerIsWhite) {
         super(playerIsWhite);
     }
 

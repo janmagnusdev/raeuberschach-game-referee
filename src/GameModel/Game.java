@@ -1,6 +1,10 @@
 package GameModel;
 
 import GUIView.ComponentCreation.DisableButtonProperty;
+import GameModel.Players.AsciiPlayer;
+import GameModel.Players.DummyPlayer;
+import GameModel.Players.HumanPlayer;
+import GameModel.Players.Player;
 import assets.IO;
 import org.jetbrains.annotations.NotNull;
 

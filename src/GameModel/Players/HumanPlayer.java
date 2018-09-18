@@ -1,4 +1,6 @@
-package GameModel;
+package GameModel.Players;
+
+import GameModel.Move;
 
 public class HumanPlayer extends Player {
     public HumanPlayer(boolean isWhite) {
