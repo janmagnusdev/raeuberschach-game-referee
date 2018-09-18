@@ -1,9 +1,9 @@
-package GUIView;
+package Loaders;
 
 import GameModel.Pieces.*;
 import javafx.scene.image.Image;
 
-public class ImageLoader { //Mit freundlicher Unterstützung von Pascal Winkler -> Erklärung des Konzepts eines ImageLoaders
+public class ImageLoader { //Mit freundlicher Unterstützung von Pascal Winkler -> Erklärung des Konzepts eines ImageLoaders und Singleton
     private static ImageLoader instance;
 
     private Image rookWhiteImage = new Image("piece-icons/rook-white.png");

@@ -23,8 +23,12 @@ public abstract class Piece {
      * @param board The board the piece belongs to. Could be substituted by this.getBelongingField.getBelongingBoard.
      * @return True if the piece can perform the move. False otherwise.
      */
+    @Deprecated
     public abstract boolean checkMove(@NotNull Move move, @NotNull Board board);
 
+    /**
+     * @return All possible fields the piece can perform moves to, as an ArrayList.
+     **/
     public abstract ArrayList<Field> getPossibleFields();
 
     void addPossibleFieldsDirectionToArray(ArrayList<Field> possibleFields, int dirRow, int dirColumn) {

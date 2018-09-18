@@ -4,6 +4,7 @@
 	<classpathentry kind="src" path="res"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry exported="true" kind="var" path="APPLICATION_HOME_DIR/jre64/lib/ext/jfxrt.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPOSITORY/org/jetbrains/annotations/16.0.2/annotations-16.0.2.jar"/>
+	<classpathentry exported="true" kind="var" path="MAVEN_REPOSITORY/org/jetbrains/annotations/16.0.2/annotations-16.0.2.jar"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.USER_LIBRARY/org.jetbrains:annotations:16.0.2"/>
 	<classpathentry kind="output" path="out/production/game-referee"/>
 </classpath>

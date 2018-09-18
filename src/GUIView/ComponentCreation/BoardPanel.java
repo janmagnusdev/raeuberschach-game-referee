@@ -1,8 +1,8 @@
 package GUIView.ComponentCreation;
 
-import assets.IO;
+import GameModel.Move;
 import GUIView.ActivePiece;
-import GUIView.ImageLoader;
+import Loaders.ImageLoader;
 import GameModel.Board;
 import GameModel.Field;
 import GameModel.Game;
@@ -10,11 +10,13 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
+import org.jetbrains.annotations.Nullable;
 
 public class BoardPanel extends Region {
     ActivePiece activePiece;
     private Game game;
     private Canvas canvas;
+    ActivePiece animatedPiece;
 
     public final int BOARD_SIZE;
     public final int CELL_SIZE;
@@ -39,7 +41,7 @@ public class BoardPanel extends Region {
         this.offset = offset;
     }
 
-    public void paintState() {
+    public void paintState(@Nullable Move move) {
         GraphicsContext gc = canvas.getGraphicsContext2D();
         gc.setStroke(Color.BLACK);
 
@@ -56,14 +58,51 @@ public class BoardPanel extends Region {
                 }
                 gc.fillRect(j * CELL_SIZE + CELL_SIZE + offset, i * CELL_SIZE + CELL_SIZE + offset, CELL_SIZE, CELL_SIZE);
                 gc.strokeRect(j * CELL_SIZE + CELL_SIZE + offset, i * CELL_SIZE + CELL_SIZE + offset, CELL_SIZE, CELL_SIZE);
-                if (activePiece == null) {
+
+                /*int val = 0; //Stackoverflow Solution: https://stackoverflow.com/questions/8850497/switch-case-request-with-boolean
+                if (activePiece != null) val |= 0x1;
+                if (animatedPiece != null) val |= 0x2;
+
+                switch (val) {
+                    case 0: // Both null
+                        if (!fields[i][j].isEmpty()) {
+                            gc.drawImage(ImageLoader.getInstance().loadPieceImage(fields[i][j].getContentPiece()), ((j + 1) * CELL_SIZE + 4), ((i + 1) * CELL_SIZE + 3), CELL_SIZE * 0.85, CELL_SIZE * 0.85);
+                        }
+                        break;
+                    case 1: // activePiece not null
+                        if (!fields[i][j].isEmpty() && !(i == activePiece.getSrcField().getRowDesignation() && j == activePiece.getSrcField().getColumnDesignation())) {
+                            gc.drawImage(ImageLoader.getInstance().loadPieceImage(fields[i][j].getContentPiece()), ((j + 1) * CELL_SIZE + 4), ((i + 1) * CELL_SIZE + 3), CELL_SIZE * 0.85, CELL_SIZE * 0.85);
+                        }
+                        break;
+                    case 2: // animatedPiece not null
+                        if (!fields[i][j].isEmpty() && !(i == animatedPiece.getSrcField().getRowDesignation() && j == animatedPiece.getSrcField().getColumnDesignation())) {
+                            gc.drawImage(ImageLoader.getInstance().loadPieceImage(fields[i][j].getContentPiece()), ((j + 1) * CELL_SIZE + 4), ((i + 1) * CELL_SIZE + 3), CELL_SIZE * 0.85, CELL_SIZE * 0.85);
+                        }
+                        break;
+                    case 3: // both not null
+                        if (!fields[i][j].isEmpty() && !(i == animatedPiece.getSrcField().getRowDesignation() && j == animatedPiece.getSrcField().getColumnDesignation()) && !(i == activePiece.getSrcField().getRowDesignation() && j == activePiece.getSrcField().getColumnDesignation())) {
+                            gc.drawImage(ImageLoader.getInstance().loadPieceImage(fields[i][j].getContentPiece()), ((j + 1) * CELL_SIZE + 4), ((i + 1) * CELL_SIZE + 3), CELL_SIZE * 0.85, CELL_SIZE * 0.85);
+                        }
+                        break;
+                }*/
+
+                if (activePiece == null && animatedPiece == null) {
                     if (!fields[i][j].isEmpty()) {
                         gc.drawImage(ImageLoader.getInstance().loadPieceImage(fields[i][j].getContentPiece()), ((j + 1) * CELL_SIZE + 4), ((i + 1) * CELL_SIZE + 3), CELL_SIZE * 0.85, CELL_SIZE * 0.85);
                     }
-                } else {
-                    if (!fields[i][j].isEmpty() && (i != activePiece.getSrcField().getRowDesignation() || j != activePiece.getSrcField().getColumnDesignation())) {
+                } else if (activePiece != null && animatedPiece == null){
+                    if (!fields[i][j].isEmpty() && !(i == activePiece.getSrcField().getRowDesignation() && j == activePiece.getSrcField().getColumnDesignation())) {
                         gc.drawImage(ImageLoader.getInstance().loadPieceImage(fields[i][j].getContentPiece()), ((j + 1) * CELL_SIZE + 4), ((i + 1) * CELL_SIZE + 3), CELL_SIZE * 0.85, CELL_SIZE * 0.85);
                     }
+                } else if (activePiece == null && animatedPiece != null) {
+                    if (!fields[i][j].isEmpty() && !(i == animatedPiece.getSrcField().getRowDesignation() && j == animatedPiece.getSrcField().getColumnDesignation())) {
+                        gc.drawImage(ImageLoader.getInstance().loadPieceImage(fields[i][j].getContentPiece()), ((j + 1) * CELL_SIZE + 4), ((i + 1) * CELL_SIZE + 3), CELL_SIZE * 0.85, CELL_SIZE * 0.85);
+                    }
+                } else {
+                    if (!fields[i][j].isEmpty() && !(i == animatedPiece.getSrcField().getRowDesignation() && j == animatedPiece.getSrcField().getColumnDesignation()) && !(i == activePiece.getSrcField().getRowDesignation() && j == activePiece.getSrcField().getColumnDesignation())) {
+                        gc.drawImage(ImageLoader.getInstance().loadPieceImage(fields[i][j].getContentPiece()), ((j + 1) * CELL_SIZE + 4), ((i + 1) * CELL_SIZE + 3), CELL_SIZE * 0.85, CELL_SIZE * 0.85);
+                    }
+
                 }
             }
         }
@@ -83,6 +122,12 @@ public class BoardPanel extends Region {
             gc.setStroke(Color.web("#ff3d00")); //Noch falsches Feld rot markieren, falls dem so ist TODO
             gc.setLineWidth(1.00);
         }
+        if (animatedPiece != null) {
+            gc.drawImage(ImageLoader.getInstance().loadPieceImage(board.getFieldAtIndex(animatedPiece.getSrcField().getRowDesignation(), animatedPiece.getSrcField().getColumnDesignation()).getContentPiece()), animatedPiece.getX() + 4, animatedPiece.getY() + 3, CELL_SIZE * 0.85, CELL_SIZE * 0.85);
+        }
+        /*if (move != null) {
+            this.paintMoveAnimation(move.getSourceColumn(), move.getSourceRow(), move.getDestColumn(), move.getDestColumn());
+        }*/
     }
 
     //Getter and Setter
@@ -98,15 +143,26 @@ public class BoardPanel extends Region {
         this.activePiece = activePiece;
     }
 
-    public void update() {
+    public void update(@Nullable Move move) {
         canvas.getGraphicsContext2D().setStroke(Color.WHITE);
         canvas.getGraphicsContext2D().clearRect(0, 0, CELL_SIZE * (fields.length + 1),
                 CELL_SIZE * (fields[0].length + 1));
-        this.paintState();
-        IO.println("Log: Updated BoardPanel");
+        this.paintState(move);
     }
 
     public Field[][] getFields() {
         return fields;
+    }
+
+    public Game getGame() {
+        return game;
+    }
+
+    public void setAnimatedPiece(ActivePiece animatedPiece) {
+        this.animatedPiece = animatedPiece;
+    }
+
+    public ActivePiece getAnimatedPiece() {
+        return animatedPiece;
     }
 }

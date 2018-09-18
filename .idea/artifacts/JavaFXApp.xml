@@ -8,7 +8,7 @@
     </properties>
     <root id="root">
       <element id="archive" name="JavaFXApp.jar">
-        <element id="module-output" name="game-referee" />
+        <element id="module-output" name="Jan-MagnusKisterGameReferee" />
       </element>
     </root>
   </artifact>

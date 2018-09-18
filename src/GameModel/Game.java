@@ -1,15 +1,24 @@
 package GameModel;
 
+import GUIView.ComponentCreation.DisableButtonProperty;
+import GameModel.Players.AsciiPlayer;
+import GameModel.Players.DummyPlayer;
+import GameModel.Players.HumanPlayer;
+import GameModel.Players.Player;
 import assets.IO;
 import org.jetbrains.annotations.NotNull;
 
-public class Game { //Puts a whole game with all its components together
+import java.util.Observable;
+
+public class Game extends Observable { //Puts a whole game with all its components together
     private Board board;
     private Referee referee;
     private int turnNumber;
     private Player white = new HumanPlayer(true);
     private Player black = new HumanPlayer(false);
     private Player currentPlayer = white;
+    private Thread dummyDummyGame;
+    private DisableButtonProperty gameActiveProperty;
 
     public Game(Board board) {
         this.board = board;
@@ -17,10 +26,34 @@ public class Game { //Puts a whole game with all its components together
         this.turnNumber = 1;
     }
 
+    public void startDummyDummyGame(Game game) {
+        game.white = new DummyPlayer(true, game.getBoard());
+        game.black = new DummyPlayer(false, game.getBoard());
+        game.currentPlayer = game.white;
+
+        dummyDummyGame = new Thread() {
+            @Override
+            public void run() {
+                synchronized (game) {
+                    while (!game.checkEndingByPieces(board.getFields())) {
+                        if (this.isInterrupted()) {
+                            break;
+                        }
+                        game.setChanged();
+                        notifyObservers(game.currentPlayer.getNextMove(null));
+                    }
+                    dummyDummyGame = null;
+                }
+            }
+        };
+        dummyDummyGame.start();
+    }
+
+    //region ASCII
     public void startGameAscii() {
         System.out.print("Weiß beginnt, Schwarz gewinnt! Let it rip!\n\n");
-        Player white = new AsciiPlayer(true);
-        Player black = new AsciiPlayer(false);
+        white = new AsciiPlayer(true);
+        black = new AsciiPlayer(false);
         currentPlayer = white;
         Move nextMove;
         for (; ; ) {
@@ -63,7 +96,14 @@ public class Game { //Puts a whole game with all its components together
         }
         IO.println("\nDas Spiel ging " + turnNumber + " Züge!");
     }
+    //endregion
 
+    /**
+     *
+     * @param fields The Field Array that is checked.
+     * @return If one has Pieces, and the other doesn't, return true. False if both still have pieces. Also true if
+     * nobody has pieces, which can't happen.
+     */
     public boolean checkEndingByPieces(@NotNull Field[][] fields) {
         boolean whiteHasPieces = false;
         boolean blackHasPieces = false;
@@ -82,6 +122,11 @@ public class Game { //Puts a whole game with all its components together
     }
 
     //Getter and Setter
+
+    public Thread getDummyDummyGame() {
+        return dummyDummyGame;
+    }
+
     public Board getBoard() {
         return board;
     }

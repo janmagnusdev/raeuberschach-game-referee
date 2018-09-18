@@ -6,7 +6,6 @@ public class ActivePiece {
     Field srcField;
     double x;
     double y;
-    Field[] destFields;
 
     public ActivePiece (double x, double y) {
         this.x = x;
