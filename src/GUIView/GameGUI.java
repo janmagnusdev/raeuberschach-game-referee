@@ -69,8 +69,7 @@ public class GameGUI extends Application {
         stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent e) {
-                Platform.exit();
-                System.exit(0);
+                exitAllGUIs();
             }
         });
         stage.setTitle("Räuberschach V2.01-//-02");
@@ -88,6 +87,7 @@ public class GameGUI extends Application {
 
     public void exitAllGUIs() {
         Platform.exit();
+        System.exit(0);
     }
 
     public void createCloneGui() {
@@ -257,11 +257,19 @@ public class GameGUI extends Application {
 
     private EventHandler<ActionEvent> stopDummyDummyGameHandler() {
         return event -> {
-            try {
-                this.getGame().getDummyDummyGame().interrupt();
-            } catch (Exception e) {
-                IO.println(e.toString());
-            }
+            this.getGame().getDummyDummyGame().interrupt();
+            startGame.setDisable(false);
+            stopGame.setDisable(true);
+            playButton.setDisable(false);
+            stopButton.setDisable(true);
+            game.getBoard().setPiecesInitial();
+            game.setCurrentPlayer(game.getWhite());
+        };
+    }
+
+    private EventHandler<ActionEvent> pauseDummyDummyGameHandler() {
+        return event -> {
+            this.getGame().getDummyDummyGame().interrupt();
             startGame.setDisable(false);
             stopGame.setDisable(true);
             playButton.setDisable(false);

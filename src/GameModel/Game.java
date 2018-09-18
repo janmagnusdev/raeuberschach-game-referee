@@ -2,13 +2,9 @@ package GameModel;
 
 import GUIView.ComponentCreation.DisableButtonProperty;
 import assets.IO;
-import javafx.beans.value.ChangeListener;
-import javafx.scene.control.MenuItem;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Observable;
-import java.util.Observer;
-import java.util.concurrent.TimeUnit;
 
 public class Game extends Observable { //Puts a whole game with all its components together
     private Board board;
@@ -26,33 +22,27 @@ public class Game extends Observable { //Puts a whole game with all its componen
         this.turnNumber = 1;
     }
 
-    public synchronized void startDummyDummyGame(Game game) {
+    public void startDummyDummyGame(Game game) {
         game.white = new DummyPlayer(true, game.getBoard());
         game.black = new DummyPlayer(false, game.getBoard());
         game.currentPlayer = game.white;
 
         dummyDummyGame = new Thread() {
             @Override
-            public synchronized void run() {
-                while (!game.checkEndingByPieces(board.getFields())) {
-                    if(this.isInterrupted()) {
-                        break;
-                    }
+            public void run() {
+                synchronized (game) {
+                    while (!game.checkEndingByPieces(board.getFields())) {
+                        if (this.isInterrupted()) {
+                            break;
+                        }
                         game.setChanged();
                         notifyObservers(game.currentPlayer.getNextMove(null));
+                    }
+                    dummyDummyGame = null;
                 }
-                dummyDummyGame = null;
             }
         };
         dummyDummyGame.start();
-    }
-
-    public void setDummyDummyGameOnWait() {
-        try {
-            this.dummyDummyGame.wait();
-        } catch (Exception e) {
-            IO.println("DummyDummyGame couldn't wait");
-        }
     }
 
     //region ASCII
@@ -104,6 +94,12 @@ public class Game extends Observable { //Puts a whole game with all its componen
     }
     //endregion
 
+    /**
+     *
+     * @param fields The Field Array that is checked.
+     * @return If one has Pieces, and the other doesn't, return true. False if both still have pieces. Also true if
+     * nobody has pieces, which can't happen.
+     */
     public boolean checkEndingByPieces(@NotNull Field[][] fields) {
         boolean whiteHasPieces = false;
         boolean blackHasPieces = false;

@@ -1,5 +1,6 @@
 package GUIView.ComponentCreation;
 
+import GUIView.AnimationThread;
 import GameModel.Move;
 import assets.IO;
 import GUIView.ActivePiece;
@@ -14,12 +15,14 @@ import javafx.scene.paint.Color;
 import org.jetbrains.annotations.Nullable;
 
 import javax.lang.model.element.ModuleElement;
+import java.lang.management.PlatformManagedObject;
 import java.util.concurrent.TimeUnit;
 
 public class BoardPanel extends Region {
     ActivePiece activePiece;
     private Game game;
     private Canvas canvas;
+    ActivePiece animatedPiece;
 
     public final int BOARD_SIZE;
     public final int CELL_SIZE;
@@ -88,25 +91,12 @@ public class BoardPanel extends Region {
             gc.setStroke(Color.web("#ff3d00")); //Noch falsches Feld rot markieren, falls dem so ist TODO
             gc.setLineWidth(1.00);
         }
+        if (animatedPiece != null) {
+            gc.drawImage(ImageLoader.getInstance().loadPieceImage(board.getFieldAtIndex(animatedPiece.getSrcField().getRowDesignation(), animatedPiece.getSrcField().getColumnDesignation()).getContentPiece()), animatedPiece.getY(), animatedPiece.getX(), CELL_SIZE * 0.85, CELL_SIZE * 0.85);
+        }
         /*if (move != null) {
             this.paintMoveAnimation(move.getSourceColumn(), move.getSourceRow(), move.getDestColumn(), move.getDestColumn());
         }*/
-    }
-
-    private void paintMoveAnimation(int sourceColumn, int sourceRow, int destColumn, int destRow) { //TODO
-        GraphicsContext gc = this.getCanvas().getGraphicsContext2D();
-
-        int i = sourceRow;
-        for (int j = sourceColumn; j < destColumn && i < destRow; j++, i++) {
-            {
-                this.update(null);
-                int columnDir = sourceColumn < destColumn ? 1 : -1;
-                int rowDir = sourceRow < destRow ? 1 : -1;
-                gc.drawImage(ImageLoader.getInstance().loadPieceImage(fields[sourceRow][sourceColumn].getContentPiece()), (sourceColumn + 1 ) * CELL_SIZE, (sourceRow + 1) * CELL_SIZE,
-                        CELL_SIZE * 0.85, CELL_SIZE * 0.85);
-            }
-        }
-
     }
 
     //Getter and Setter
@@ -127,10 +117,21 @@ public class BoardPanel extends Region {
         canvas.getGraphicsContext2D().clearRect(0, 0, CELL_SIZE * (fields.length + 1),
                 CELL_SIZE * (fields[0].length + 1));
         this.paintState(move);
-        IO.println("Log: Updated BoardPanel");
     }
 
     public Field[][] getFields() {
         return fields;
+    }
+
+    public Game getGame() {
+        return game;
+    }
+
+    public void setAnimatedPiece(ActivePiece animatedPiece) {
+        this.animatedPiece = animatedPiece;
+    }
+
+    public ActivePiece getAnimatedPiece() {
+        return animatedPiece;
     }
 }

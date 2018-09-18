@@ -1,5 +1,6 @@
 package Controller;
 
+import GUIView.AnimationThread;
 import assets.IO;
 import GUIView.ActivePiece;
 import GUIView.ComponentCreation.BoardPanel;
@@ -127,9 +128,16 @@ public class BoardEventHandler implements EventHandler<MouseEvent>, Observer {
         this.validateAndExecuteMove((Move) arg);
         try {
            x.getDummyDummyGame().sleep(1000);
-        } catch (Exception e) {
-
+        } catch (InterruptedException e) {
+            x.getDummyDummyGame().interrupt();
         }
         boardPanel.update((Move) arg);
+        Thread animationThread = new AnimationThread(boardPanel, game, (Move) arg, 10);
+        animationThread.start();
+        try {
+            animationThread.join();
+        } catch (InterruptedException e) {
+            game.getDummyDummyGame().interrupt();
+        }
     }
 }

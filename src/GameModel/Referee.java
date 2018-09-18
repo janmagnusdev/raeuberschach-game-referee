@@ -4,25 +4,24 @@ public class Referee {
     Board board;
     Game game;
 
-    public Referee(Board board, Game game) { //Board übergeben ist obsolet, wenn der Referee das Game kennt; anpassen
+    public Referee(Board board, Game game) { //Board übergeben ist obsolet, wenn der Referee das Game kennt; TODO
         this.board = board;
         this.game = game;
     }
 
-
     /**
-     * The referee checks if the chosen move of a player can be executed without validating piece movement rules.
+     * The referee checks if the chosen move of a player can be executed without validating piece movement rules/
+     * possible fields of the chosen piece.
      *
      * @param move          The move a player has chosen.
      * @param currentPlayer The player the move belongs to.
-     * @return Returns true, if the movement for the piece is valid. Returns false otherwise.
+     * @return Returns true, if the movement for the piece is valid, based on the ArrayList of possible moves for the
+     * instance of the piece in the source field of the move. Returns false otherwise.
      */
     public boolean checkMove(Move move, Player currentPlayer) {
         if (move.isInBoardRange() && game.getCurrentPlayer().isWhite() == game.getBoard().getFieldAtIndex(move.getSourceRow(),
                 move.getSourceColumn()).getContentPiece().getIsWhite()) {
-            if (!isTargetFromSameColor(move, currentPlayer) && !(board.getFieldAtIndex(move.getSourceRow(), move.getSourceColumn()).isEmpty())) {
-                return board.getFieldAtIndex(move.getSourceRow(), move.getSourceColumn()).getContentPiece().checkMove(move, board);
-            }
+            return board.getFieldAtIndex(move.getSourceRow(), move.getSourceColumn()).getContentPiece().getPossibleFields().contains(board.getFieldAtIndex(move.getDestRow(), move.getDestColumn()));
         }
         return false;
     }
