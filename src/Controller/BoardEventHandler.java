@@ -105,8 +105,8 @@ public class BoardEventHandler implements EventHandler<MouseEvent>, Observer {
         if (game.checkEndingByPieces(game.getBoard().getFields())) {
             game.getBoard().setPiecesInitial();
         }
-        if (game.getDummyDummyGame() != null) {
-            if (game.getDummyDummyGame().isInterrupted()) {
+        if (game.getGameThread() != null) {
+            if (game.getGameThread().isInterrupted()) {
                 game.getBoard().setPiecesInitial();
             }
         }
@@ -131,13 +131,13 @@ public class BoardEventHandler implements EventHandler<MouseEvent>, Observer {
         try {
             animationThread.join();
         } catch (InterruptedException e) {
-            game.getDummyDummyGame().interrupt();
+            game.getGameThread().interrupt();
         }
         this.validateAndExecuteMove((Move) arg);
         try {
-           x.getDummyDummyGame().sleep(1000);
+           x.getGameThread().sleep(1000);
         } catch (InterruptedException e) {
-            x.getDummyDummyGame().interrupt();
+            x.getGameThread().interrupt();
         }
     }
 }

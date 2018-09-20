@@ -16,7 +16,7 @@ import java.util.jar.Attributes;
 //Singleton
 public class ProgramManager {
     private static ProgramManager instance;
-    private final String PROGRAMS_PATH = "programs/";
+    private final String PROGRAMS_PATH = "../raeuberschach-game-referee/src/programs"; //relative path
 
     private ProgramManager() {
 
@@ -45,7 +45,7 @@ public class ProgramManager {
     Pfad (Ordner + Name) der jar-Datei
      * @return der Wert des Attributs Player
      */
-    private String getProgramClassname(String jarPathAndFilename) {
+    public String getProgramClassname(String jarPathAndFilename) {
         try {
             URL fileURL = new URL("file:" + jarPathAndFilename);
             URL u = new URL("jar", "", fileURL + "!/");
@@ -75,6 +75,15 @@ public class ProgramManager {
              e.printStackTrace();
              return false;
          }
+    }
+
+    public Class<?> loadClassFromProgramsFolder(String classname) {
+        try (JARClassLoader jcl = new JARClassLoader(PROGRAMS_PATH)) {
+            return jcl.loadClass(classname);
+        } catch (Throwable e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public ArrayList<String> getPlayerNamesList() {

@@ -8,16 +8,17 @@ import GameModel.Players.Player;
 import assets.IO;
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.reflect.Constructor;
 import java.util.Observable;
 
 public class Game extends Observable { //Puts a whole game with all its components together
     private Board board;
     private Referee referee;
     private int turnNumber;
-    private Player white = new HumanPlayer(true, this.board);
-    private Player black = new HumanPlayer(false, this.board);
+    private Player white = new HumanPlayer(true, null);
+    private Player black = new HumanPlayer(false, null);
     private Player currentPlayer = white;
-    private Thread dummyDummyGame;
+    private Thread gameThread;
     private DisableButtonProperty gameActiveProperty;
 
     public Game(Board board) {
@@ -31,7 +32,11 @@ public class Game extends Observable { //Puts a whole game with all its componen
         game.black = new DummyPlayer(false, game.getBoard());
         game.currentPlayer = game.white;
 
-        dummyDummyGame = new Thread() {
+        runGame(this);
+    }
+
+    private void runGame(Game game) {
+        gameThread = new Thread(){
             @Override
             public void run() {
                 synchronized (game) {
@@ -42,11 +47,19 @@ public class Game extends Observable { //Puts a whole game with all its componen
                         game.setChanged();
                         notifyObservers(game.currentPlayer.getNextMove(null));
                     }
-                    dummyDummyGame = null;
+                    gameThread = null;
                 }
             }
         };
-        dummyDummyGame.start();
+        gameThread.start();
+    }
+
+    public void startSelectedAIGame(Player white, Player black){
+        if (white.isAI() && black.isAI()) {
+            this.white = white;
+            this.black = black;
+            runGame(this);
+        }
     }
 
     //region ASCII
@@ -124,8 +137,8 @@ public class Game extends Observable { //Puts a whole game with all its componen
 
     //Getter and Setter
 
-    public Thread getDummyDummyGame() {
-        return dummyDummyGame;
+    public Thread getGameThread() {
+        return gameThread;
     }
 
     public Board getBoard() {
