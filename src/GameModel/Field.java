@@ -3,10 +3,10 @@ package GameModel;
 import GameModel.Pieces.Piece;
 
 public class Field {
-    Piece contentPiece;
-    Board belongingBoard;
-    int columnDesignation;
-    int rowDesignation;
+    private Piece contentPiece;
+    private Board belongingBoard;
+    private int columnDesignation;
+    private int rowDesignation;
 
     Field (Board belongingBoard,  int rowDesignation, int columnDesignation, Piece contentPiece) {
         this.columnDesignation = columnDesignation;

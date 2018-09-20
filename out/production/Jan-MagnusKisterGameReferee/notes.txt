@@ -22,7 +22,7 @@ Class<?> cls = cl.loadClass(clsName);
 // wenn der Name noch nicht bekannt ist:
 public Field[] getDeclaredFieds() / alle Attribute einer Klasse laden
 --> getName(), getType(), getModifiers(), getDeclaredMethods -> gibt Methoden der Klasse raus - siehe MethodenInfosDemo
---> siehe Praktikum, Reflection und dann AttributInfoDemo
+--> siehe Praktikum, Loaders und dann AttributInfoDemo
 
 Class c = Class.forName("java.awt.Point");
 Object o = c.newInstance(); -> erzeugt das gleiche wie new java.awt.Point(); -> geht auch mit Parametern, siehe Seite 10!

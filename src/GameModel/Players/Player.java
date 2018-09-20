@@ -6,15 +6,21 @@ import GameModel.Move;
 public abstract class Player {
     boolean isAI;
     private boolean isWhite;
+    protected Board board;
 
-    public Player (boolean isWhite) {
+    public Player (boolean isWhite, Board board) {
         this.isWhite = isWhite;
+        this.board = board;
     }
 
     public abstract Move getNextMove(Move oldMove);
 
     public boolean isWhite() {
         return isWhite;
+    }
+
+    public boolean isAI() {
+        return isAI;
     }
 
     public boolean canStrikeEnemy(Board board) {

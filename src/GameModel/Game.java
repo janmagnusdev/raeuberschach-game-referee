@@ -50,6 +50,7 @@ public class Game extends Observable { //Puts a whole game with all its componen
     }
 
     //region ASCII
+    @Deprecated
     public void startGameAscii() {
         System.out.print("Weiß beginnt, Schwarz gewinnt! Let it rip!\n\n");
         white = new AsciiPlayer(true);
