@@ -14,8 +14,8 @@ public class Game extends Observable { //Puts a whole game with all its componen
     private Board board;
     private Referee referee;
     private int turnNumber;
-    private Player white = new HumanPlayer(true);
-    private Player black = new HumanPlayer(false);
+    private Player white = new HumanPlayer(true, this.board);
+    private Player black = new HumanPlayer(false, this.board);
     private Player currentPlayer = white;
     private Thread dummyDummyGame;
     private DisableButtonProperty gameActiveProperty;
@@ -53,8 +53,8 @@ public class Game extends Observable { //Puts a whole game with all its componen
     @Deprecated
     public void startGameAscii() {
         System.out.print("Weiß beginnt, Schwarz gewinnt! Let it rip!\n\n");
-        white = new AsciiPlayer(true);
-        black = new AsciiPlayer(false);
+        white = new AsciiPlayer(true, this.board);
+        black = new AsciiPlayer(false, this.board);
         currentPlayer = white;
         Move nextMove;
         for (; ; ) {

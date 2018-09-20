@@ -1,0 +1,13 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="DummyPlayer">
+    <output-path>$PROJECT_DIR$/out/artifacts/DummyPlayer</output-path>
+    <root id="archive" name="DummyPlayer.jar">
+      <element id="directory" name="DummyPlayer">
+        <element id="file-copy" path="$PROJECT_DIR$/src/GameModel/Players/DummyPlayer.java" />
+      </element>
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$USER_HOME$/files/java-manifest/DummyPlayer/META-INF/MANIFEST.MF" />
+      </element>
+    </root>
+  </artifact>
+</component>

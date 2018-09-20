@@ -3,10 +3,13 @@ package GameModel.Players;
 import GameModel.Board;
 import GameModel.Field;
 import GameModel.Move;
+import assets.IO;
 
 import java.util.ArrayList;
 
-public class DummyPlayer extends Player {
+public class DummyPlayer extends GameModel.Players.Player {
+
+    final String FULL_CLASSNAME = "GameModel.Players.DummyPlayer";
 
     public DummyPlayer(boolean isWhite, Board board) {
         super(isWhite, board);
