@@ -36,22 +36,27 @@ public class Game extends Observable { //Puts a whole game with all its componen
     }
 
     private void runGame(Game game) {
-        gameThread = new Thread(){
+        game.gameThread = new Thread(){
             @Override
             public void run() {
                 synchronized (game) {
+                    game.setCurrentPlayer(game.white);
+                    game.setChanged();
+                    Move oldMove = game.getCurrentPlayer().getNextMove(null);
+                    notifyObservers(oldMove);
                     while (!game.checkEndingByPieces(board.getFields())) {
                         if (this.isInterrupted()) {
                             break;
                         }
                         game.setChanged();
-                        notifyObservers(game.currentPlayer.getNextMove(null));
+                        oldMove = game.currentPlayer.getNextMove(oldMove);
+                        notifyObservers(oldMove);
                     }
-                    gameThread = null;
+                    game.gameThread = null;
                 }
             }
         };
-        gameThread.start();
+        game.gameThread.start();
     }
 
     public void startSelectedAIGame(Player white, Player black){

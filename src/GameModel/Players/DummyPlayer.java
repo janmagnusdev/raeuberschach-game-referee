@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public class DummyPlayer extends GameModel.Players.Player {
 
-    final String FULL_CLASSNAME = "GameModel.Players.DummyPlayer";
+    //final String FULL_CLASSNAME = "GameModel.Players.DummyPlayer";
 
     public DummyPlayer(boolean isWhite, Board board) {
         super(isWhite, board);
