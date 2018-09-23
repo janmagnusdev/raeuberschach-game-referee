@@ -71,7 +71,7 @@ Wenn jemand dann auf einen dieser SPieler drückt, dann werden die SPieler als A
 Wird auf Start gedrückt, dann wird vom GameManager das SPiel gestartet
 + und das Programm wird geladen!
 public Player loadProgram(string classname, boolean isA){
-Program program = this.programs.get/classname);
+Program program = this.Programs.get/classname);
 if(programm==null){return null;
 }
 try(JARClassLoader){

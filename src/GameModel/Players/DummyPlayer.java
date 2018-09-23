@@ -3,13 +3,12 @@ package GameModel.Players;
 import GameModel.Board;
 import GameModel.Field;
 import GameModel.Move;
-import assets.IO;
 
 import java.util.ArrayList;
 
 public class DummyPlayer extends GameModel.Players.Player {
 
-    final String FULL_CLASSNAME = "GameModel.Players.DummyPlayer";
+    //final String FULL_CLASSNAME = "GameModel.Players.DummyPlayer";
 
     public DummyPlayer(boolean isWhite, Board board) {
         super(isWhite, board);
@@ -18,12 +17,14 @@ public class DummyPlayer extends GameModel.Players.Player {
 
     @Override
     public Move getNextMove(Move oldMove) {
-        if (oldMove != null) doEnemyMove(oldMove);
-        return possibleRandomMove();
+        if (oldMove != null) doMove(oldMove);
+        Move newMove = possibleRandomMove();
+        if (newMove != null) doMove(newMove);
+        return newMove;
     }
 
     @SuppressWarnings("Duplicates")
-    private void doEnemyMove(Move oldMove) {
+    private void doMove(Move oldMove) {
         if (board.getFieldAtIndex(oldMove.getDestRow(), oldMove.getDestColumn()).getContentPiece() != null) {
             board.getFieldAtIndex(oldMove.getDestRow(), oldMove.getDestColumn()).getContentPiece().setBelongingField(null);
             board.getFieldAtIndex(oldMove.getDestRow(), oldMove.getDestColumn()).setContentPiece(null);

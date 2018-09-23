@@ -15,7 +15,6 @@ import java.util.jar.Attributes;
  */
 final class JARClassLoader extends URLClassLoader {
 
-
     /**
      * Initialisiert einen Classloader zum Laden von Klassen aus jar-Dateien*
      * @param jarPathAndFilename

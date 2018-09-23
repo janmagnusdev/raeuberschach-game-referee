@@ -24,6 +24,7 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 
 public class GameGUI extends Application {
 
@@ -91,12 +92,12 @@ public class GameGUI extends Application {
         boardPanel.getCanvas().setOnMouseReleased(bh);
     }
 
-    public void exitAllGUIs() {
+    private void exitAllGUIs() {
         Platform.exit();
         System.exit(0);
     }
 
-    public void createCloneGui() {
+    private void createCloneGui() {
         try {
             new GameGUI().start(new Stage());
         } catch (Exception e) {
@@ -235,6 +236,11 @@ public class GameGUI extends Application {
                 tgBlack = new ToggleGroup();
             }
             ToggleGroup tg = isWhite ? tgWhite : tgBlack;
+            tg.selectedToggleProperty().addListener(event -> {
+                if (isWhite) {
+
+                }
+            });
 
             RadioMenuItem playerButton = new RadioMenuItem("Player");
             playerButton.setAccelerator(KeyCombination.valueOf("SHORTCUT + H"));
@@ -242,7 +248,8 @@ public class GameGUI extends Application {
             playerButton.setToggleGroup(tg);
             playerMenu.getItems().add(playerButton);
 
-            for (String classname : ProgramManager.getInstance().getPlayerNamesList()) {
+            ArrayList<String> classnames = ProgramManager.getInstance().getPlayerNamesList();
+            for (String classname : classnames) {
                 RadioMenuItem AIButton = new RadioMenuItem(classname);
                 AIButton.setToggleGroup(tg);
                 playerMenu.getItems().add(AIButton);
@@ -265,58 +272,59 @@ public class GameGUI extends Application {
         };
     }
 
-    private EventHandler<ActionEvent> startAIAIGameHandler() { //TODO Wenn nur ein Mensch und eine AI ausgewählt sind soll erstmal gar nichts passieren bzw Panel geupdatet werden
+    private EventHandler<ActionEvent> startAIAIGameHandler() {
         return event -> {
             if (this.getGame().getGameThread() == null) {
-                Player whitePlayer = null;
-                Player blackPlayer = null;
-                String whiteProgramClassname =
-                        ProgramManager.getInstance().getProgramClassname((String) tgWhite.getSelectedToggle().getUserData()); //FIXME Der ProgramManager lädt hier noch null!
-                String blackProgramClassname = ProgramManager.getInstance().getProgramClassname((String) tgBlack.getSelectedToggle().getUserData());
-                Class<?> whiteClass =
-                        ProgramManager.getInstance().loadClassFromProgramsFolder(whiteProgramClassname);
-                Class<?> blackClass = ProgramManager.getInstance().loadClassFromProgramsFolder(blackProgramClassname);
+                    RadioMenuItem radioWhite = (RadioMenuItem) tgWhite.getSelectedToggle();
+                    String whiteProgramClassname = radioWhite.getText();
+                    RadioMenuItem radioBlack = (RadioMenuItem) tgBlack.getSelectedToggle();
+                    String blackProgramClassname = radioBlack.getText();
 
-                try {
-                    Constructor<?> csw = whiteClass.getDeclaredConstructor(boolean.class, Board.class);
-                    Constructor<?> csb = blackClass.getDeclaredConstructor(boolean.class, Board.class);
-                    whitePlayer = (Player) csw.newInstance(true, new Board());
-                    blackPlayer = (Player) csb.newInstance(false, new Board());
-                } catch (Throwable e) {
-                    e.printStackTrace();
+                    if (!whiteProgramClassname.equals("Player") && !blackProgramClassname.equals("Player")) {
+                        //NOTIDEAL Noch wird einfach überprüft, ob einer der Spieler Mensch ist, über Classname Player.
+                        Class<?> whiteClass =
+                                ProgramManager.getInstance().loadClassFromProgramsFolder(whiteProgramClassname);
+                        Class<?> blackClass = ProgramManager.getInstance().loadClassFromProgramsFolder(blackProgramClassname);
+                        try {
+                            Constructor<?> csw = whiteClass.getDeclaredConstructor(boolean.class, Board.class);
+                            Constructor<?> csb = blackClass.getDeclaredConstructor(boolean.class, Board.class);
+                            this.getGame().startSelectedAIGame((Player) csw.newInstance(true, new Board()),
+                                                               (Player) csb.newInstance(false, new Board()));
+                            startGame.setDisable(true);
+                            stopGame.setDisable(false);
+                            playButton.setDisable(true);
+                            stopButton.setDisable(false);
+                        } catch (Throwable e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
+        };
+    }
 
-                if (whitePlayer != null && blackPlayer != null) {
-                    this.getGame().startSelectedAIGame(whitePlayer, blackPlayer);
+        private EventHandler<ActionEvent> stopGameThreadHandler() {
+            return event -> {
+                if (game.getGameThread().isAlive() || game.getGameThread() != null) {
+                    this.getGame().getGameThread().interrupt();
+                    startGame.setDisable(false);
+                    stopGame.setDisable(true);
+                    playButton.setDisable(false);
+                    stopButton.setDisable(true);
+                    game.getBoard().setPiecesInitial();
+                    Platform.runLater(() -> boardPanel.update(null));
+                    game.setCurrentPlayer(game.getWhite());
                 }
-                startGame.setDisable(true);
-                stopGame.setDisable(false);
-                playButton.setDisable(true);
-                stopButton.setDisable(false);
-            }
-        };
-    }
+            };
+        }
 
-    private EventHandler<ActionEvent> stopGameThreadHandler() {
-        return event -> {
-            this.getGame().getGameThread().interrupt();
-            startGame.setDisable(false);
-            stopGame.setDisable(true);
-            playButton.setDisable(false);
-            stopButton.setDisable(true);
-            game.getBoard().setPiecesInitial();
-            Platform.runLater(() -> boardPanel.update(null));
-            game.setCurrentPlayer(game.getWhite());
-        };
+        // unused
+        private EventHandler<ActionEvent> pauseDummyDummyGameHandler() {
+            return event -> {
+                this.getGame().getGameThread().interrupt();
+                startGame.setDisable(false);
+                stopGame.setDisable(true);
+                playButton.setDisable(false);
+                stopButton.setDisable(true);
+            };
+        }
     }
-
-    private EventHandler<ActionEvent> pauseDummyDummyGameHandler() {
-        return event -> {
-            this.getGame().getGameThread().interrupt();
-            startGame.setDisable(false);
-            stopGame.setDisable(true);
-            playButton.setDisable(false);
-            stopButton.setDisable(true);
-        };
-    }
-}

@@ -8,8 +8,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 
 public class PawnPiece extends Piece {
-    boolean wasMoved;
-    Field firstField;
+    private boolean wasMoved;
+    private Field firstField;
 
     public PawnPiece(boolean isWhite, Field belongingField) {
         super(isWhite, belongingField);
