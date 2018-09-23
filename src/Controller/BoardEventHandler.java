@@ -136,7 +136,7 @@ public class BoardEventHandler implements EventHandler<MouseEvent>, Observer {
             }
             this.validateAndExecuteMove((Move) arg);
             try {
-                x.getGameThread().sleep(100);
+                x.getGameThread().sleep(1000);
             } catch (InterruptedException e) {
                 x.getGameThread().interrupt();
             }
