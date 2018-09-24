@@ -1,22 +1,20 @@
 package Loaders;
 
 import GameModel.Board;
-import GameModel.Players.DummyPlayer;
-import assets.IO;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.net.JarURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.jar.Attributes;
 
-//Singleton
+// Singleton; Idea from Jannis Lehmann
+// In Cooperation with Danny Irrsack and Henri Baumann
 public class ProgramManager {
     private static ProgramManager instance;
-    private final String PROGRAMS_PATH = System.getProperty("user.dir") + "/src/Programs"; // relative path;
+    private final String PROGRAMS_PATH = System.getProperty("user.dir") + "/programs"; // relative path;
     // project-name has to be
     // changed dependent on the project-folder name; System.getProperty might work
 
@@ -58,7 +56,7 @@ public class ProgramManager {
     }
 
     /**
-     * Checks a given .jar-File whether it is has a Class contained
+     * Checks a given .jar-file whether it has a class contained that can be instantiated with the needed constructor
      *
      * @param jarPathAndFileName
      * @param classname
@@ -66,10 +64,11 @@ public class ProgramManager {
      * @return
      */
     private boolean loadCheck(String jarPathAndFileName, String classname, boolean isWhite) {
-        try (JARClassLoader jcl = new JARClassLoader(jarPathAndFileName)) {
+        try {
+            JARClassLoader jcl = new JARClassLoader(jarPathAndFileName);
             Class<?> cla = jcl.loadClass(classname);
-            Constructor<?> cs = cla.getDeclaredConstructor(boolean.class, Board.class);
-            cs.newInstance(isWhite, new Board());
+            Constructor<?> cs = cla.getDeclaredConstructor(boolean.class);
+            cs.newInstance(isWhite);
             return true;
         } catch (Throwable e) {
             e.printStackTrace();
@@ -77,18 +76,9 @@ public class ProgramManager {
         }
     }
 
-    public Class<?> loadClassFromProgramsFolder(String classname) {
-        try (JARClassLoader jcl = new JARClassLoader(PROGRAMS_PATH)) {
-            return jcl.loadClass(classname);
-        } catch (Throwable e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
     public ArrayList<String> getPlayerNamesList() {
         ArrayList<String> playerNames = new ArrayList<>();
-        System.out.println("PROGRAMS_PATH: " + PROGRAMS_PATH);
+        // System.out.println("PROGRAMS_PATH: " + PROGRAMS_PATH);
         File programDirectory = new File(PROGRAMS_PATH);
         File[] files = programDirectory.listFiles();
         if (files == null) {
@@ -110,5 +100,15 @@ public class ProgramManager {
             }
         }
         return playerNames;
+    }
+
+    public Class<?> loadClassFromProgramsFolder(String classname) {
+        try {
+            JARClassLoader jcl = new JARClassLoader(PROGRAMS_PATH);
+            return jcl.loadClass(classname);
+        } catch (Throwable e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

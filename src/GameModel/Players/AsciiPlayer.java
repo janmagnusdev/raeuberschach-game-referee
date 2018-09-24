@@ -6,8 +6,8 @@ import assets.IO;
 
 public class AsciiPlayer extends Player {
 
-    public AsciiPlayer(boolean playerIsWhite, Board board) {
-        super(playerIsWhite, board);
+    public AsciiPlayer(boolean playerIsWhite) {
+        super(playerIsWhite);
     }
 
     @Override

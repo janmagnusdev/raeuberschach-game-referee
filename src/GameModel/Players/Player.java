@@ -6,11 +6,9 @@ import GameModel.Move;
 public abstract class Player {
     boolean isAI;
     private boolean isWhite;
-    protected Board board;
 
-    public Player (boolean isWhite, Board board) {
+    public Player(boolean isWhite) {
         this.isWhite = isWhite;
-        this.board = board;
     }
 
     public abstract Move getNextMove(Move oldMove);

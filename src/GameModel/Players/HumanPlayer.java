@@ -4,8 +4,8 @@ import GameModel.Board;
 import GameModel.Move;
 
 public class HumanPlayer extends Player {
-    public HumanPlayer(boolean isWhite, Board board) {
-        super(isWhite, board);
+    public HumanPlayer(boolean isWhite) {
+        super(isWhite);
     }
 
     @Override

@@ -8,15 +8,14 @@ import GameModel.Players.Player;
 import assets.IO;
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.reflect.Constructor;
 import java.util.Observable;
 
 public class Game extends Observable { //Puts a whole game with all its components together
     private Board board;
     private Referee referee;
     private int turnNumber;
-    private Player white = new HumanPlayer(true, null);
-    private Player black = new HumanPlayer(false, null);
+    private Player white = new HumanPlayer(true);
+    private Player black = new HumanPlayer(false);
     private Player currentPlayer = white;
     private Thread gameThread;
     private DisableButtonProperty gameActiveProperty;
@@ -28,8 +27,8 @@ public class Game extends Observable { //Puts a whole game with all its componen
     }
 
     public void startDummyDummyGame(Game game) {
-        game.white = new DummyPlayer(true, game.getBoard());
-        game.black = new DummyPlayer(false, game.getBoard());
+        game.white = new DummyPlayer(true);
+        game.black = new DummyPlayer(false);
         game.currentPlayer = game.white;
 
         runGame(this);
@@ -71,8 +70,8 @@ public class Game extends Observable { //Puts a whole game with all its componen
     @Deprecated
     public void startGameAscii() {
         System.out.print("Weiß beginnt, Schwarz gewinnt! Let it rip!\n\n");
-        white = new AsciiPlayer(true, this.board);
-        black = new AsciiPlayer(false, this.board);
+        white = new AsciiPlayer(true);
+        black = new AsciiPlayer(false);
         currentPlayer = white;
         Move nextMove;
         for (; ; ) {

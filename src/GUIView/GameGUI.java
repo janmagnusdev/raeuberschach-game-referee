@@ -162,9 +162,7 @@ public class GameGUI extends Application {
     private class MenuBarGameReferee extends MenuBar {
 
 
-        MenuBarGameReferee(GameGUI parent) { //erstellt den obersten Menü-Balken; fügt diesem außerdem chronologisch
-            // alle
-            // MenutItems hinzu
+        MenuBarGameReferee(GameGUI parent) {
 
             Menu gameMenu = new Menu("_Game");
             gameMenu.setMnemonicParsing(true);
@@ -236,11 +234,6 @@ public class GameGUI extends Application {
                 tgBlack = new ToggleGroup();
             }
             ToggleGroup tg = isWhite ? tgWhite : tgBlack;
-            tg.selectedToggleProperty().addListener(event -> {
-                if (isWhite) {
-
-                }
-            });
 
             RadioMenuItem playerButton = new RadioMenuItem("Player");
             playerButton.setAccelerator(KeyCombination.valueOf("SHORTCUT + H"));
@@ -286,10 +279,10 @@ public class GameGUI extends Application {
                                 ProgramManager.getInstance().loadClassFromProgramsFolder(whiteProgramClassname);
                         Class<?> blackClass = ProgramManager.getInstance().loadClassFromProgramsFolder(blackProgramClassname);
                         try {
-                            Constructor<?> csw = whiteClass.getDeclaredConstructor(boolean.class, Board.class);
-                            Constructor<?> csb = blackClass.getDeclaredConstructor(boolean.class, Board.class);
-                            this.getGame().startSelectedAIGame((Player) csw.newInstance(true, new Board()),
-                                                               (Player) csb.newInstance(false, new Board()));
+                            Constructor<?> csw = whiteClass.getDeclaredConstructor(boolean.class);
+                            Constructor<?> csb = blackClass.getDeclaredConstructor(boolean.class);
+                            this.game.startSelectedAIGame((Player) csw.newInstance(true),
+                                                               (Player) csb.newInstance(false));
                             startGame.setDisable(true);
                             stopGame.setDisable(false);
                             playButton.setDisable(true);
@@ -317,7 +310,7 @@ public class GameGUI extends Application {
             };
         }
 
-        // unused
+        // UNUSED
         private EventHandler<ActionEvent> pauseDummyDummyGameHandler() {
             return event -> {
                 this.getGame().getGameThread().interrupt();

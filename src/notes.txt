@@ -1,3 +1,4 @@
+Notizen von Henri Baumann:
 if(Platflor.isFxApplicationThread()){
 update();
 }else{
@@ -84,3 +85,32 @@ Dann die richtigen Spieler hinterlegen und bei Spielstart darauf Bezug nehmen
 In programm sind der Name und der Full JarFileName gespeicehrt
 
 beim start-drücken wird das spiel geöffnet und die variablen (d.h. die spieler (genauer die Namen der Spieler) ) werden über den Namen des Spielers geladen und an das Spiel übergeben! Der öffnet dann den Bums.
+
+------------------------------------------------------------------------------------------------------
+Wichtig für die Abgabe etc
+- Kommentare wirklich nur bei komplexen Zusammenhängen bspw Javadoc
+- Vernünftige aussagekräftige Bezeichner
+- Alle Quellen direkt am Source Code verweisen (Kooperationen, Links, etc.)
+
+Referee muss nicht gegen andere Programme oder Zugriffe auf diesen abgesichert sein
+
+------------------------------------------------
+Aufgabenblatt 7 Spielbäume
+- Bei Schach maximal so Suchtiefe 3
+- Bewertungsfunktion, die alle möglichen Ausgänge bewertet, -x für Schwarz, +x für Weiß
+- Das schwierigste: gute Bewertungsfunktion
+- Man geht beim minimax davon aus, dass der andere Spieler ungefähr gleich bewertet wie ich
+
+Beim Schach bspw Bewertungsgrundlage: Die Differenz der übriggebliebenen Figuren für Weiß und Schwarz
+
+Algorithmen:
+Minimax für Spielbaum
+AlphaBetaProoning für ausdünnen des Spielbaums <- Optional
+
+Versuchen, testen ist schwierig
+
+Human vs. AI
+- Thread wartet auf HumanMove, hmove.join()
+- HumanMove extends Thread implements EventHandler
+- HumanMove setzt die EventHandler Methoden auf das BoardPanel, und setzt diese auch wieder auf null nach dem Move,
+damit der Human keine Moves währenddessen machen darf
