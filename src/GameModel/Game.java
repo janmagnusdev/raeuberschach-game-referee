@@ -105,7 +105,7 @@ public class Game extends Observable { //Puts a whole game with all its componen
         printGameEnding(currentPlayer);
     }
 
-    private void printGameEnding(@NotNull Player player) {
+    private void printGameEnding(Player player) {
         IO.println("Player " + player + " hat verloren!");
         if (player.isWhite()) {
             IO.print("Black hat gewonnen!");
@@ -122,7 +122,7 @@ public class Game extends Observable { //Puts a whole game with all its componen
      * @return If one has Pieces, and the other doesn't, return true. False if both still have pieces. Also true if
      * nobody has pieces, which can't happen.
      */
-    public boolean checkEndingByPieces(@NotNull Field[][] fields) {
+    public boolean checkEndingByPieces(Field[][] fields) {
         boolean whiteHasPieces = false;
         boolean blackHasPieces = false;
         for (Field[] fields1 : fields) {

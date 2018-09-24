@@ -18,7 +18,7 @@ public class QueenPiece extends Piece {
     }
 
     @Override
-    public boolean checkMove(@NotNull Move move, @NotNull Board board) {
+    public boolean checkMove(Move move, Board board) {
         //Queen can move in all directions, any number of fields
 
         if (move.getDestColumn() == move.getSourceColumn()) {

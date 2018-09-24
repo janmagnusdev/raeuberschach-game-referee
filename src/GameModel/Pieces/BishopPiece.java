@@ -3,7 +3,6 @@ package GameModel.Pieces;
 import GameModel.Board;
 import GameModel.Field;
 import GameModel.Move;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
@@ -19,7 +18,7 @@ public class BishopPiece extends Piece {
     }
 
     @Override
-    public boolean checkMove(@NotNull Move move, @NotNull Board board) {
+    public boolean checkMove(Move move, Board board) {
         return (Math.abs(move.getDestRow() - move.getSourceRow()) == Math.abs(move.getDestColumn() - move.getSourceColumn()) && !isPieceInWayDiagonal(move));
     }
 
