@@ -4,8 +4,8 @@ import GameModel.Board;
 import GameModel.Move;
 
 public abstract class Player {
-    boolean isAI;
-    private boolean isWhite;
+    protected boolean isAI;
+    protected boolean isWhite;
 
     public Player(boolean isWhite) {
         this.isWhite = isWhite;

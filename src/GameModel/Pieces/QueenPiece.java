@@ -3,7 +3,6 @@ package GameModel.Pieces;
 import GameModel.Board;
 import GameModel.Field;
 import GameModel.Move;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 

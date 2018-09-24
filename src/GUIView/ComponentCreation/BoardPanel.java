@@ -10,7 +10,6 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
-import org.jetbrains.annotations.Nullable;
 
 public class BoardPanel extends Region {
     ActivePiece activePiece;
@@ -41,7 +40,7 @@ public class BoardPanel extends Region {
         this.offset = offset;
     }
 
-    public void paintState(@Nullable Move move) {
+    public void paintState(Move move) {
         GraphicsContext gc = canvas.getGraphicsContext2D();
         gc.setStroke(Color.BLACK);
 
@@ -143,7 +142,7 @@ public class BoardPanel extends Region {
         this.activePiece = activePiece;
     }
 
-    public void update(@Nullable Move move) {
+    public void update(Move move) {
         canvas.getGraphicsContext2D().setStroke(Color.WHITE);
         canvas.getGraphicsContext2D().clearRect(0, 0, CELL_SIZE * (fields.length + 1),
                 CELL_SIZE * (fields[0].length + 1));

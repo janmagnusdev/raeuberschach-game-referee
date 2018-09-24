@@ -1,6 +1,6 @@
 package Loaders;
 
-import GameModel.Board;
+import assets.IO;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,8 +24,8 @@ public class ProgramManager {
 
     /*
     public static void main(String[] args) {
-        IO.print(ProgramManager.getInstance().loadCheck("Programs/ DummyPlayer.jar", DummyPlayer.class.getName(), true));
-        IO.print(ProgramManager.getInstance().loadCheck("Programs/ DummyPlayer.jar", DummyPlayer.class.getName(),
+        IO.print(ProgramManager.getInstance().loadCheck("Programs/ DummyPlayerOld.jar", DummyPlayerOld.class.getName(), true));
+        IO.print(ProgramManager.getInstance().loadCheck("Programs/ DummyPlayerOld.jar", DummyPlayerOld.class.getName(),
                                                         false));
     }
     */
@@ -67,6 +67,7 @@ public class ProgramManager {
         try {
             JARClassLoader jcl = new JARClassLoader(jarPathAndFileName);
             Class<?> cla = jcl.loadClass(classname);
+            IO.println(cla.getName());
             Constructor<?> cs = cla.getDeclaredConstructor(boolean.class);
             cs.newInstance(isWhite);
             return true;
@@ -102,7 +103,8 @@ public class ProgramManager {
         return playerNames;
     }
 
-    public Class<?> loadClassFromProgramsFolder(String classname) {
+    public Class<?> loadClassFromProgramsFolder(String classname) { //Programs path reicht alleine
+        // nicht aus; hashmap; der jarclassloader braucht eine übergebene .jar file
         try {
             JARClassLoader jcl = new JARClassLoader(PROGRAMS_PATH);
             return jcl.loadClass(classname);

@@ -2,11 +2,10 @@ package GameModel;
 
 import GUIView.ComponentCreation.DisableButtonProperty;
 import GameModel.Players.AsciiPlayer;
-import GameModel.Players.DummyPlayer;
+import GameModel.Players.DummyPlayerOld;
 import GameModel.Players.HumanPlayer;
 import GameModel.Players.Player;
 import assets.IO;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Observable;
 
@@ -27,8 +26,8 @@ public class Game extends Observable { //Puts a whole game with all its componen
     }
 
     public void startDummyDummyGame(Game game) {
-        game.white = new DummyPlayer(true);
-        game.black = new DummyPlayer(false);
+        game.white = new DummyPlayerOld(true);
+        game.black = new DummyPlayerOld(false);
         game.currentPlayer = game.white;
 
         runGame(this);
