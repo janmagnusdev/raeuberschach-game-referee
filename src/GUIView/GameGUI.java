@@ -1,5 +1,7 @@
 package GUIView;
 
+import GameModel.Players.Player;
+import Loaders.ProgramManager;
 import assets.IO;
 import Controller.BoardEventHandler;
 import GUIView.ComponentCreation.*;
@@ -21,6 +23,9 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
+import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+
 public class GameGUI extends Application {
 
     public static void main(String[] args) { //TODO Thread Safety!
@@ -31,6 +36,8 @@ public class GameGUI extends Application {
     private Label messageLabel; //TODO Messages müssen noch angezeigt werden; bspw. "Weiß ist am Zug!".
     private Game game;
     private MenuBar menuBar;
+    private ToggleGroup tgWhite;
+    private ToggleGroup tgBlack;
     private ToolBar toolBar;
     private Button playButton;
     private Button stopButton;
@@ -85,12 +92,12 @@ public class GameGUI extends Application {
         boardPanel.getCanvas().setOnMouseReleased(bh);
     }
 
-    public void exitAllGUIs() {
+    private void exitAllGUIs() {
         Platform.exit();
         System.exit(0);
     }
 
-    public void createCloneGui() {
+    private void createCloneGui() {
         try {
             new GameGUI().start(new Stage());
         } catch (Exception e) {
@@ -118,8 +125,8 @@ public class GameGUI extends Application {
         stopButton.setGraphic(new ImageView(recordIcon));
         stopButton.setOnAction(event -> parent.exitAllGUIs());
 
-        playButton.setOnAction(startDummyDummyGameHandler());
-        stopButton.setOnAction(stopDummyDummyGameHandler());
+        playButton.setOnAction(startAIAIGameHandler());
+        stopButton.setOnAction(stopGameThreadHandler());
 
         toolBar.getItems().addAll(newGuiButton, printButton, new Separator(), playButton, stopButton);
 
@@ -151,12 +158,11 @@ public class GameGUI extends Application {
         return toolBar;
     }
 
+    //region MenuBarGameReferee
     private class MenuBarGameReferee extends MenuBar {
 
 
-        MenuBarGameReferee(GameGUI parent) { //erstellt den obersten Menü-Balken; fügt diesem außerdem chronologisch
-            // alle
-            // MenutItems hinzu
+        MenuBarGameReferee(GameGUI parent) {
 
             Menu gameMenu = new Menu("_Game");
             gameMenu.setMnemonicParsing(true);
@@ -168,8 +174,8 @@ public class GameGUI extends Application {
             stopGame = createMenuItem("_Stop", "SHORTCUT + S", null, null);
             stopGame.setDisable(true);
 
-            startGame.setOnAction(startDummyDummyGameHandler());
-            stopGame.setOnAction(stopDummyDummyGameHandler());
+            startGame.setOnAction(startAIAIGameHandler());
+            stopGame.setOnAction(stopGameThreadHandler());
 
         /*DisableButtonProperty disableStartBean = new DisableButtonProperty();
         disableStartBean.valueProperty().addListener(new ChangeListener<Boolean>() {
@@ -194,12 +200,13 @@ public class GameGUI extends Application {
             gameMenu.getItems().addAll(newGame, printGame, new SeparatorMenuItem(), startGame, stopGame, new SeparatorMenuItem(), exitGame);
             //Separator können nicht benutzt werden; addAll() erwartet MenuItems. Dazu gibt es die Klasse SeparatorMenuItem.
 
-            this.getMenus().addAll(gameMenu, createPlayerAMenu(), createPlayerBMenu());
+            this.getMenus().addAll(gameMenu, createPlayerMenu(true), createPlayerMenu(false));
 
         }
 
+        @SuppressWarnings("all")
         private MenuItem createMenuItem(String text, String shortcut, String graphicPath,
-                                  EventHandler<ActionEvent> eventHandler) {
+                                        EventHandler<ActionEvent> eventHandler) {
             MenuItem menuItem = new MenuItem();
             if (text != null) {
                 menuItem.setText(text);
@@ -218,34 +225,37 @@ public class GameGUI extends Application {
 
         }
 
-        private Menu createPlayerBMenu() {
-            Menu playerBMenu = new Menu("Player _B");
-            playerBMenu.setMnemonicParsing(true);
+        private Menu createPlayerMenu(boolean isWhite) {
+            Menu playerMenu = new Menu(isWhite ? "White" : "Black");
+            playerMenu.setMnemonicParsing(true);
+            if (isWhite) {
+                tgWhite = new ToggleGroup();
+            } else {
+                tgBlack = new ToggleGroup();
+            }
+            ToggleGroup tg = isWhite ? tgWhite : tgBlack;
 
-            RadioMenuItem playerBButton = new RadioMenuItem("Player");
-            playerBButton.setAccelerator(KeyCombination.valueOf("SHORTCUT + S"));
-            playerBButton.setSelected(true);
-            playerBMenu.getItems().add(playerBButton);
+            RadioMenuItem playerButton = new RadioMenuItem("Player");
+            playerButton.setAccelerator(KeyCombination.valueOf("SHORTCUT + H"));
+            playerButton.setSelected(true);
+            playerButton.setToggleGroup(tg);
+            playerMenu.getItems().add(playerButton);
 
-            return playerBMenu;
-        }
+            ArrayList<String> classnames = ProgramManager.getInstance().getPlayerNamesList();
+            for (String classname : classnames) {
+                RadioMenuItem AIButton = new RadioMenuItem(classname);
+                AIButton.setToggleGroup(tg);
+                playerMenu.getItems().add(AIButton);
+            }
 
-        private Menu createPlayerAMenu() {
-            Menu playerAMenu = new Menu("Player _A");
-            playerAMenu.setMnemonicParsing(true);
-
-            RadioMenuItem playerAButton = new RadioMenuItem("Player");
-            playerAButton.setSelected(true);
-            playerAButton.setAccelerator(KeyCombination.valueOf("SHORTCUT + S"));
-            playerAMenu.getItems().add(playerAButton);
-
-            return playerAMenu;
+            return playerMenu;
         }
     }
+    //endregion
 
     private EventHandler<ActionEvent> startDummyDummyGameHandler() {
         return event -> {
-            if (this.getGame().getDummyDummyGame() == null) {
+            if (this.getGame().getGameThread() == null) {
                 this.getGame().startDummyDummyGame(this.getGame());
                 startGame.setDisable(true);
                 stopGame.setDisable(false);
@@ -255,25 +265,59 @@ public class GameGUI extends Application {
         };
     }
 
-    private EventHandler<ActionEvent> stopDummyDummyGameHandler() {
+    private EventHandler<ActionEvent> startAIAIGameHandler() {
         return event -> {
-            this.getGame().getDummyDummyGame().interrupt();
-            startGame.setDisable(false);
-            stopGame.setDisable(true);
-            playButton.setDisable(false);
-            stopButton.setDisable(true);
-            game.getBoard().setPiecesInitial();
-            game.setCurrentPlayer(game.getWhite());
+            if (this.getGame().getGameThread() == null) {
+                    RadioMenuItem radioWhite = (RadioMenuItem) tgWhite.getSelectedToggle();
+                    String whiteProgramClassname = radioWhite.getText();
+                    RadioMenuItem radioBlack = (RadioMenuItem) tgBlack.getSelectedToggle();
+                    String blackProgramClassname = radioBlack.getText();
+
+                    if (!whiteProgramClassname.equals("Player") && !blackProgramClassname.equals("Player")) {
+                        //NOTIDEAL Noch wird einfach überprüft, ob einer der Spieler Mensch ist, über Classname Player.
+                        Class<?> whiteClass =
+                                ProgramManager.getInstance().loadClassFromProgramsFolderJar(whiteProgramClassname);
+                        Class<?> blackClass = ProgramManager.getInstance().loadClassFromProgramsFolderJar(blackProgramClassname);
+                        try {
+                            Constructor<?> csw = whiteClass.getDeclaredConstructor(boolean.class);
+                            Constructor<?> csb = blackClass.getDeclaredConstructor(boolean.class);
+                            this.game.startSelectedAIGame((Player) csw.newInstance(true),
+                                                               (Player) csb.newInstance(false));
+                            startGame.setDisable(true);
+                            stopGame.setDisable(false);
+                            playButton.setDisable(true);
+                            stopButton.setDisable(false);
+                        } catch (Throwable e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
         };
     }
 
-    private EventHandler<ActionEvent> pauseDummyDummyGameHandler() {
-        return event -> {
-            this.getGame().getDummyDummyGame().interrupt();
-            startGame.setDisable(false);
-            stopGame.setDisable(true);
-            playButton.setDisable(false);
-            stopButton.setDisable(true);
-        };
+        private EventHandler<ActionEvent> stopGameThreadHandler() {
+            return event -> {
+                if (game.getGameThread().isAlive() || game.getGameThread() != null) {
+                    this.getGame().getGameThread().interrupt();
+                    startGame.setDisable(false);
+                    stopGame.setDisable(true);
+                    playButton.setDisable(false);
+                    stopButton.setDisable(true);
+                    game.getBoard().setPiecesInitial();
+                    Platform.runLater(() -> boardPanel.update(null));
+                    game.setCurrentPlayer(game.getWhite());
+                }
+            };
+        }
+
+        // UNUSED
+        private EventHandler<ActionEvent> pauseDummyDummyGameHandler() {
+            return event -> {
+                this.getGame().getGameThread().interrupt();
+                startGame.setDisable(false);
+                stopGame.setDisable(true);
+                playButton.setDisable(false);
+                stopButton.setDisable(true);
+            };
+        }
     }
-}

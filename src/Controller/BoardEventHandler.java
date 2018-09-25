@@ -105,8 +105,8 @@ public class BoardEventHandler implements EventHandler<MouseEvent>, Observer {
         if (game.checkEndingByPieces(game.getBoard().getFields())) {
             game.getBoard().setPiecesInitial();
         }
-        if (game.getDummyDummyGame() != null) {
-            if (game.getDummyDummyGame().isInterrupted()) {
+        if (game.getGameThread() != null) {
+            if (game.getGameThread().isInterrupted()) {
                 game.getBoard().setPiecesInitial();
             }
         }
@@ -124,20 +124,23 @@ public class BoardEventHandler implements EventHandler<MouseEvent>, Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-        Game x = (Game) o;
-        Thread animationThread = new AnimationThread(boardPanel, game, (Move) arg, 10); // muss an die erste Stelle geschrieben werden, da sonst der timeout von gameThread
-        // ausläuft und somit die Ausführung der Animation durch aufrufen von notifyObervers() in GameThread niemals erreicht wird
-        animationThread.start();
-        try {
-            animationThread.join();
-        } catch (InterruptedException e) {
-            game.getDummyDummyGame().interrupt();
-        }
-        this.validateAndExecuteMove((Move) arg);
-        try {
-           x.getDummyDummyGame().sleep(1000);
-        } catch (InterruptedException e) {
-            x.getDummyDummyGame().interrupt();
+        if (arg != null) {
+            Game x = (Game) o;
+            Thread animationThread = new AnimationThread(boardPanel, game, (Move) arg, 10); // muss an die erste
+            // Stelle geschrieben werden, da sonst der timeout von gameThread
+            // ausläuft und somit die Ausführung der Animation durch aufrufen von notifyObervers() in GameThread niemals erreicht wird
+            animationThread.start();
+            try {
+                animationThread.join();
+            } catch (InterruptedException e) {
+                game.getGameThread().interrupt();
+            }
+            this.validateAndExecuteMove((Move) arg);
+            try {
+                x.getGameThread().sleep(1000);
+            } catch (InterruptedException e) {
+                x.getGameThread().interrupt();
+            }
         }
     }
 }

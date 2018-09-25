@@ -3,8 +3,8 @@ package GameModel;
 import GameModel.Players.Player;
 
 public class Referee {
-    Board board;
-    Game game;
+    private Board board;
+    private Game game;
 
     public Referee(Board board, Game game) { //Board übergeben ist obsolet, wenn der Referee das Game kennt; TODO
         this.board = board;
@@ -54,6 +54,7 @@ public class Referee {
         }
     }
 
+    @SuppressWarnings("Duplicates")
     public void doMove(Move move) {
         //if statement sorgt dafür, dass die geschlagene Figur vom Brett entfernt wird; falls dort eine Figur steht
         if (board.getFieldAtIndex(move.getDestRow(), move.getDestColumn()).getContentPiece() != null) {
@@ -63,11 +64,5 @@ public class Referee {
         board.getFieldAtIndex(move.getDestRow(), move.getDestColumn()).setContentPiece(board.getFieldAtIndex(move.getSourceRow(), move.getSourceColumn()).getContentPiece());
         board.getFieldAtIndex(move.getDestRow(), move.getDestColumn()).getContentPiece().setBelongingField(board.getFieldAtIndex(move.getDestRow(), move.getDestColumn()));
         board.getFieldAtIndex(move.getSourceRow(), move.getSourceColumn()).setContentPiece(null);
-        board.getFieldAtIndex(move.getSourceRow(), move.getSourceColumn()).setContentPiece(null);
-    }
-
-    //Getter and Setter
-    public Board getBoard() {
-        return board;
     }
 }

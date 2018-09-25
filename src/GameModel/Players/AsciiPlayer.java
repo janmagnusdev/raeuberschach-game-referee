@@ -1,5 +1,6 @@
 package GameModel.Players;
 
+import GameModel.Board;
 import GameModel.Move;
 import assets.IO;
 

@@ -2,7 +2,7 @@ package GameModel;
 
 import GUIView.ComponentCreation.DisableButtonProperty;
 import GameModel.Players.AsciiPlayer;
-import GameModel.Players.DummyPlayer;
+import GameModel.Players.DummyPlayerOld;
 import GameModel.Players.HumanPlayer;
 import GameModel.Players.Player;
 import assets.IO;
@@ -17,7 +17,7 @@ public class Game extends Observable { //Puts a whole game with all its componen
     private Player white = new HumanPlayer(true);
     private Player black = new HumanPlayer(false);
     private Player currentPlayer = white;
-    private Thread dummyDummyGame;
+    private Thread gameThread;
     private DisableButtonProperty gameActiveProperty;
 
     public Game(Board board) {
@@ -27,29 +27,47 @@ public class Game extends Observable { //Puts a whole game with all its componen
     }
 
     public void startDummyDummyGame(Game game) {
-        game.white = new DummyPlayer(true, game.getBoard());
-        game.black = new DummyPlayer(false, game.getBoard());
+        game.white = new DummyPlayerOld(true);
+        game.black = new DummyPlayerOld(false);
         game.currentPlayer = game.white;
 
-        dummyDummyGame = new Thread() {
+        runGame(this);
+    }
+
+    private void runGame(Game game) {
+        game.gameThread = new Thread(){
             @Override
             public void run() {
                 synchronized (game) {
+                    game.setCurrentPlayer(game.white);
+                    game.setChanged();
+                    Move oldMove = game.getCurrentPlayer().getNextMove(null);
+                    notifyObservers(oldMove);
                     while (!game.checkEndingByPieces(board.getFields())) {
                         if (this.isInterrupted()) {
                             break;
                         }
                         game.setChanged();
-                        notifyObservers(game.currentPlayer.getNextMove(null));
+                        oldMove = game.currentPlayer.getNextMove(oldMove);
+                        notifyObservers(oldMove);
                     }
-                    dummyDummyGame = null;
+                    game.gameThread = null;
                 }
             }
         };
-        dummyDummyGame.start();
+        game.gameThread.start();
+    }
+
+    public void startSelectedAIGame(Player white, Player black){
+        if (white.isAI() && black.isAI()) {
+            this.white = white;
+            this.black = black;
+            runGame(this);
+        }
     }
 
     //region ASCII
+    @Deprecated
     public void startGameAscii() {
         System.out.print("Weiß beginnt, Schwarz gewinnt! Let it rip!\n\n");
         white = new AsciiPlayer(true);
@@ -123,8 +141,8 @@ public class Game extends Observable { //Puts a whole game with all its componen
 
     //Getter and Setter
 
-    public Thread getDummyDummyGame() {
-        return dummyDummyGame;
+    public Thread getGameThread() {
+        return gameThread;
     }
 
     public Board getBoard() {

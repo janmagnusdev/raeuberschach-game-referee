@@ -7,6 +7,7 @@ package GameModel;
  * @author jakister
  * @version 1.0
  */
+@Deprecated
 public class RaeuberschachAsciiMain {
     public static void main(String[] args) {
         Game game = new Game(new Board());

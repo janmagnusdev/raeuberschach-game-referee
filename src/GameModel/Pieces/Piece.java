@@ -31,6 +31,7 @@ public abstract class Piece {
      **/
     public abstract ArrayList<Field> getPossibleFields();
 
+    //FIXME Pieces können noch über andere eigene Pieces rüberfliegen, wenn sie auch ein anderes schlagen können
     void addPossibleFieldsDirectionToArray(ArrayList<Field> possibleFields, int dirRow, int dirColumn) {
         {
             int j = this.getBelongingField().getColumnDesignation() + dirColumn;

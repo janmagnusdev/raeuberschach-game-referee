@@ -6,21 +6,40 @@ import GameModel.Move;
 
 import java.util.ArrayList;
 
-public class DummyPlayer extends Player {
+public class DummyPlayerOld extends GameModel.Players.Player {
+
     private Board board;
 
-    public DummyPlayer(boolean isWhite, Board board) {
+    //final String FULL_CLASSNAME = "GameModel.Players.DummyPlayerOld";
+
+    //TODO Board soll nicht übergeben werden, da der Spieler seine Datenstruktur evtl. ganz anders aufbaut für bspw.
+    // bessere Spielbäume
+    public DummyPlayerOld(boolean isWhite) {
         super(isWhite);
         this.isAI = true;
-        this.board = board;
+        this.board = new Board();
     }
 
     @Override
     public Move getNextMove(Move oldMove) {
-        return possibleRandomMove(board);
+        if (oldMove != null) doMove(oldMove);
+        Move newMove = possibleRandomMove();
+        if (newMove != null) doMove(newMove);
+        return newMove;
     }
 
-    private Move possibleRandomMove(Board board) { //TODO
+    @SuppressWarnings("Duplicates")
+    private void doMove(Move oldMove) {
+        if (board.getFieldAtIndex(oldMove.getDestRow(), oldMove.getDestColumn()).getContentPiece() != null) {
+            board.getFieldAtIndex(oldMove.getDestRow(), oldMove.getDestColumn()).getContentPiece().setBelongingField(null);
+            board.getFieldAtIndex(oldMove.getDestRow(), oldMove.getDestColumn()).setContentPiece(null);
+        }
+        board.getFieldAtIndex(oldMove.getDestRow(), oldMove.getDestColumn()).setContentPiece(board.getFieldAtIndex(oldMove.getSourceRow(), oldMove.getSourceColumn()).getContentPiece());
+        board.getFieldAtIndex(oldMove.getDestRow(), oldMove.getDestColumn()).getContentPiece().setBelongingField(board.getFieldAtIndex(oldMove.getDestRow(), oldMove.getDestColumn()));
+        board.getFieldAtIndex(oldMove.getSourceRow(), oldMove.getSourceColumn()).setContentPiece(null);
+    }
+
+    private Move possibleRandomMove() {
         ArrayList<Move> possibleMovesAllBelongingPieces = new ArrayList<>();
         if (this.canStrikeEnemy(board)) {
             for (int i = 0; i < board.getFields().length; i++) {

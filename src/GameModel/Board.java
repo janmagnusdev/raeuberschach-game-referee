@@ -50,7 +50,8 @@ public class Board {
         }
     }
 
-    public void printCurrentState() {
+    @Deprecated
+    void printCurrentState() {
         IO.println("      Black");
         IO.println("  a b c d e f g h ");
         for (int i = 0; i < fields.length; i++) {

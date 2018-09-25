@@ -1,8 +1,12 @@
 package Loaders;
 
+import java.io.IOException;
+import java.net.JarURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.jar.Attributes;
+
 /**
  * Classloader zum Laden von Klassen aus jar-Dateien
  *
@@ -10,6 +14,7 @@ import java.net.URLClassLoader;
  *
  */
 final class JARClassLoader extends URLClassLoader {
+
     /**
      * Initialisiert einen Classloader zum Laden von Klassen aus jar-Dateien*
      * @param jarPathAndFilename

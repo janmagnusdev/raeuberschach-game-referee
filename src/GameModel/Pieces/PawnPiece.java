@@ -7,9 +7,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
+//TODO Conversion of Pawn Pieces to another Piece when reached the last Field in its direction
+//TODO GUI PopUp dafür
 public class PawnPiece extends Piece {
-    boolean wasMoved;
-    Field firstField;
+    private boolean wasMoved;
+    private Field firstField;
 
     public PawnPiece(boolean isWhite, Field belongingField) {
         super(isWhite, belongingField);
