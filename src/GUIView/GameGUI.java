@@ -276,8 +276,8 @@ public class GameGUI extends Application {
                     if (!whiteProgramClassname.equals("Player") && !blackProgramClassname.equals("Player")) {
                         //NOTIDEAL Noch wird einfach überprüft, ob einer der Spieler Mensch ist, über Classname Player.
                         Class<?> whiteClass =
-                                ProgramManager.getInstance().loadClassFromProgramsFolder(whiteProgramClassname);
-                        Class<?> blackClass = ProgramManager.getInstance().loadClassFromProgramsFolder(blackProgramClassname);
+                                ProgramManager.getInstance().loadClassFromProgramsFolderJar(whiteProgramClassname);
+                        Class<?> blackClass = ProgramManager.getInstance().loadClassFromProgramsFolderJar(blackProgramClassname);
                         try {
                             Constructor<?> csw = whiteClass.getDeclaredConstructor(boolean.class);
                             Constructor<?> csb = blackClass.getDeclaredConstructor(boolean.class);

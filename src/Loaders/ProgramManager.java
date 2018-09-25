@@ -1,6 +1,6 @@
 package Loaders;
 
-import GameModel.Board;
+import assets.IO;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,27 +8,37 @@ import java.lang.reflect.Constructor;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.jar.Attributes;
 
 // Singleton; Idea from Jannis Lehmann
 // In Cooperation with Danny Irrsack and Henri Baumann
 public class ProgramManager {
     private static ProgramManager instance;
-    private final String PROGRAMS_PATH = System.getProperty("user.dir") + "/programs"; // relative path;
-    // project-name has to be
-    // changed dependent on the project-folder name; System.getProperty might work
+    private final String PROGRAMS_PATH = System.getProperty("user.dir") + "/programs"; // path relative to users working directory
+    private final File[] filesFromProgramDirectory = new File(PROGRAMS_PATH).listFiles();
+    private HashMap<String, File> classToFileHashMap = createClassToFileHashMap();
 
     private ProgramManager() {
 
     }
 
-    /*
-    public static void main(String[] args) {
-        IO.print(ProgramManager.getInstance().loadCheck("Programs/ DummyPlayer.jar", DummyPlayer.class.getName(), true));
-        IO.print(ProgramManager.getInstance().loadCheck("Programs/ DummyPlayer.jar", DummyPlayer.class.getName(),
-                                                        false));
+    private HashMap<String, File> createClassToFileHashMap() {
+        HashMap<String, File> classToFileHashMap = new HashMap<>();
+        if (filesFromProgramDirectory != null && filesFromProgramDirectory.length != 0) {
+            for (File file : filesFromProgramDirectory) {
+                if (file.getName().endsWith(".jar")) {
+                    String classname = getProgramClassnameFromManifest(file.getAbsolutePath());
+                    if (loadCheck(file.getAbsolutePath(), classname, true) && loadCheck(file.getAbsolutePath(), classname, false)) {
+                        classToFileHashMap.put(classname, file);
+                    }
+                }
+            }
+            return classToFileHashMap;
+        } else {
+            return null;
+        }
     }
-    */
 
     public static ProgramManager getInstance() {
         return instance == null ? instance = new ProgramManager() : instance;
@@ -36,13 +46,13 @@ public class ProgramManager {
 
     /**
      * @param jarPathAndFilename Pfad (Ordner + Name) der jar-Datei
-     * @return der Wert des Attributs Player
+     * @return Der Wert des Attributs Player
      * @author dibo
      * <p>
      * Ermittelt den Wert des Attributs "Player" in der Manifest-Datei der
      * angegebenen jar-Datei
      */
-    public String getProgramClassname(String jarPathAndFilename) {
+    public String getProgramClassnameFromManifest(String jarPathAndFilename) {
         try {
             URL fileURL = new URL("file:" + jarPathAndFilename);
             URL u = new URL("jar", "", fileURL + "!/");
@@ -57,11 +67,6 @@ public class ProgramManager {
 
     /**
      * Checks a given .jar-file whether it has a class contained that can be instantiated with the needed constructor
-     *
-     * @param jarPathAndFileName
-     * @param classname
-     * @param isWhite
-     * @return
      */
     private boolean loadCheck(String jarPathAndFileName, String classname, boolean isWhite) {
         try {
@@ -78,36 +83,36 @@ public class ProgramManager {
 
     public ArrayList<String> getPlayerNamesList() {
         ArrayList<String> playerNames = new ArrayList<>();
-        // System.out.println("PROGRAMS_PATH: " + PROGRAMS_PATH);
-        File programDirectory = new File(PROGRAMS_PATH);
-        File[] files = programDirectory.listFiles();
-        if (files == null) {
+        if (filesFromProgramDirectory == null) {
             return playerNames;
         }
-        if (files.length == 0) {
+        if (filesFromProgramDirectory.length == 0) {
             return playerNames;
         }
 
-        for (File file : files) {
-            String playerClassName = getProgramClassname(file.getAbsolutePath());
+        for (File file : filesFromProgramDirectory) {
+            String playerClassName = getProgramClassnameFromManifest(file.getAbsolutePath());
 
             boolean canInstanciateWhite = loadCheck(file.getAbsolutePath(),
-                    playerClassName, true);
+                                                    playerClassName, true);
             boolean canInstanciateBlack = loadCheck(file.getAbsolutePath(),
-                    playerClassName, false);
+                                                    playerClassName, false);
             if (canInstanciateWhite && canInstanciateBlack) {
                 playerNames.add(playerClassName);
+            } else {
+                IO.println("Couldn't create Black and White from " + file.getAbsolutePath());
             }
         }
         return playerNames;
     }
 
-    public Class<?> loadClassFromProgramsFolder(String classname) {
+    @SuppressWarnings("all")
+    public Class<?> loadClassFromProgramsFolderJar(String classname) {
         try {
-            JARClassLoader jcl = new JARClassLoader(PROGRAMS_PATH);
+            JARClassLoader jcl = new JARClassLoader(classToFileHashMap.get(classname).getAbsolutePath());
             return jcl.loadClass(classname);
-        } catch (Throwable e) {
-            e.printStackTrace();
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
             return null;
         }
     }

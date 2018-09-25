@@ -6,15 +6,15 @@ import GameModel.Move;
 
 import java.util.ArrayList;
 
-public class DummyPlayer extends GameModel.Players.Player {
+public class DummyPlayerOld extends GameModel.Players.Player {
 
     private Board board;
 
-    //final String FULL_CLASSNAME = "GameModel.Players.DummyPlayer";
+    //final String FULL_CLASSNAME = "GameModel.Players.DummyPlayerOld";
 
     //TODO Board soll nicht übergeben werden, da der Spieler seine Datenstruktur evtl. ganz anders aufbaut für bspw.
     // bessere Spielbäume
-    public DummyPlayer(boolean isWhite) {
+    public DummyPlayerOld(boolean isWhite) {
         super(isWhite);
         this.isAI = true;
         this.board = new Board();
