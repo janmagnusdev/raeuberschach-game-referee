@@ -2,7 +2,6 @@ package GameModel;
 
 import GUIView.ComponentCreation.DisableButtonProperty;
 import GameModel.Players.AsciiPlayer;
-import GameModel.Players.DummyPlayerOld;
 import GameModel.Players.HumanPlayer;
 import GameModel.Players.Player;
 import assets.IO;
@@ -23,14 +22,6 @@ public class Game extends Observable { //Puts a whole game with all its componen
         this.board = board;
         this.referee = new Referee(this.board, this);
         this.turnNumber = 1;
-    }
-
-    public void startDummyDummyGame(Game game) {
-        game.white = new DummyPlayerOld(true);
-        game.black = new DummyPlayerOld(false);
-        game.currentPlayer = game.white;
-
-        runGame(this);
     }
 
     private void runGame(Game game) {

@@ -253,18 +253,6 @@ public class GameGUI extends Application {
     }
     //endregion
 
-    private EventHandler<ActionEvent> startDummyDummyGameHandler() {
-        return event -> {
-            if (this.getGame().getGameThread() == null) {
-                this.getGame().startDummyDummyGame(this.getGame());
-                startGame.setDisable(true);
-                stopGame.setDisable(false);
-                playButton.setDisable(true);
-                stopButton.setDisable(false);
-            }
-        };
-    }
-
     private EventHandler<ActionEvent> startAIAIGameHandler() {
         return event -> {
             if (this.getGame().getGameThread() == null) {
