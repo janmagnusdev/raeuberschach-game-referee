@@ -3,7 +3,6 @@ package GameModel.Pieces;
 import GameModel.Board;
 import GameModel.Field;
 import GameModel.Move;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
@@ -18,7 +17,7 @@ public class KingPiece extends Piece {
     }
 
     @Override
-    public boolean checkMove(@NotNull Move move, @NotNull Board board) {
+    public boolean checkMove(Move move, Board board) {
         //King can only move one field in each direction
         if (move.getDestColumn() == move.getSourceColumn() && Math.abs(move.getDestRow() - move.getSourceRow()) == 1) {
             //vertical movement

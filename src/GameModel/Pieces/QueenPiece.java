@@ -3,7 +3,6 @@ package GameModel.Pieces;
 import GameModel.Board;
 import GameModel.Field;
 import GameModel.Move;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
@@ -18,7 +17,7 @@ public class QueenPiece extends Piece {
     }
 
     @Override
-    public boolean checkMove(@NotNull Move move, @NotNull Board board) {
+    public boolean checkMove(Move move, Board board) {
         //Queen can move in all directions, any number of fields
 
         if (move.getDestColumn() == move.getSourceColumn()) {

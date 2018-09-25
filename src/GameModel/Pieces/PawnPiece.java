@@ -3,7 +3,6 @@ package GameModel.Pieces;
 import GameModel.Board;
 import GameModel.Field;
 import GameModel.Move;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
@@ -24,7 +23,7 @@ public class PawnPiece extends Piece {
     }
 
     @Override
-    public boolean checkMove(@NotNull Move move, @NotNull Board board) {
+    public boolean checkMove(Move move, Board board) {
         wasMoved = (firstField != this.getBelongingField().getBelongingBoard().getFieldAtIndex(move.getSourceRow(),
                 move.getSourceColumn()));
         int allowedDir = this.getIsWhite() ? -1 : 1;

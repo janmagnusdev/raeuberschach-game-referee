@@ -3,7 +3,6 @@ package GameModel.Pieces;
 import GameModel.Board;
 import GameModel.Field;
 import GameModel.Move;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
@@ -18,7 +17,7 @@ public class KnightPiece extends Piece {
     }
 
     @Override
-    public boolean checkMove(@NotNull Move move, @NotNull Board board) {
+    public boolean checkMove(Move move, Board board) {
         return ((Math.abs(move.getSourceRow() - move.getDestRow()) == 2 && Math
                 .abs(move.getSourceColumn() - move.getDestColumn()) == 1) || ((Math
                 .abs(move.getSourceRow() - move.getDestRow()) == 1 && Math.abs(move

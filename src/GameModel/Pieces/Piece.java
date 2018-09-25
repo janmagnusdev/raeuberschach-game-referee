@@ -3,7 +3,6 @@ package GameModel.Pieces;
 import GameModel.Board;
 import GameModel.Field;
 import GameModel.Move;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
@@ -24,7 +23,7 @@ public abstract class Piece {
      * @return True if the piece can perform the move. False otherwise.
      */
     @Deprecated
-    public abstract boolean checkMove(@NotNull Move move, @NotNull Board board);
+    public abstract boolean checkMove(Move move, Board board);
 
     /**
      * @return All possible fields the piece can perform moves to, as an ArrayList.
