@@ -4,9 +4,6 @@ import  GUIView.ComponentCreation.BoardPanel;
 import GameModel.Game;
 import GameModel.Move;
 import javafx.application.Platform;
-import javafx.scene.canvas.GraphicsContext;
-
-import java.util.concurrent.TimeUnit;
 
 public class AnimationThread extends Thread {
 
@@ -45,7 +42,7 @@ public class AnimationThread extends Thread {
 
 
             for (int z = 0; z < animations; z++) {
-                Platform.runLater(() -> boardPanel.update(null));
+                Platform.runLater(() -> boardPanel.update());
                 boardPanel.getAnimatedPiece().setY(boardPanel.getAnimatedPiece().getY() + incrementFactorY * yDir);
                 boardPanel.getAnimatedPiece().setX(boardPanel.getAnimatedPiece().getX() + incrementFactorX * xDir);
                 try {

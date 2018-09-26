@@ -1,6 +1,5 @@
 package GUIView.ComponentCreation;
 
-import GameModel.Move;
 import GUIView.ActivePiece;
 import Loaders.ImageLoader;
 import GameModel.Board;
@@ -12,10 +11,10 @@ import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 
 public class BoardPanel extends Region {
-    ActivePiece activePiece;
+    private ActivePiece activePiece;
     private Game game;
     private Canvas canvas;
-    ActivePiece animatedPiece;
+    private ActivePiece animatedPiece;
 
     public final int BOARD_SIZE;
     public final int CELL_SIZE;
@@ -40,7 +39,7 @@ public class BoardPanel extends Region {
         this.offset = offset;
     }
 
-    public void paintState(Move move) {
+    public void paintState() {
         GraphicsContext gc = canvas.getGraphicsContext2D();
         gc.setStroke(Color.BLACK);
 
@@ -58,6 +57,7 @@ public class BoardPanel extends Region {
                 gc.fillRect(j * CELL_SIZE + CELL_SIZE + offset, i * CELL_SIZE + CELL_SIZE + offset, CELL_SIZE, CELL_SIZE);
                 gc.strokeRect(j * CELL_SIZE + CELL_SIZE + offset, i * CELL_SIZE + CELL_SIZE + offset, CELL_SIZE, CELL_SIZE);
 
+                //region CaseSwitchBytes
                 /*int val = 0; //Stackoverflow Solution: https://stackoverflow.com/questions/8850497/switch-case-request-with-boolean
                 if (activePiece != null) val |= 0x1;
                 if (animatedPiece != null) val |= 0x2;
@@ -84,6 +84,7 @@ public class BoardPanel extends Region {
                         }
                         break;
                 }*/
+                //endregion
 
                 if (activePiece == null && animatedPiece == null) {
                     if (!fields[i][j].isEmpty()) {
@@ -118,15 +119,12 @@ public class BoardPanel extends Region {
                         (field.getRowDesignation() + 1) * CELL_SIZE + 3, CELL_SIZE - 6,
                         CELL_SIZE - 6);
             }
-            gc.setStroke(Color.web("#ff3d00")); //Noch falsches Feld rot markieren, falls dem so ist TODO
+            gc.setStroke(Color.web("#ff3d00")); //TODO Noch falsches Feld rot markieren, falls dem so ist
             gc.setLineWidth(1.00);
         }
         if (animatedPiece != null) {
             gc.drawImage(ImageLoader.getInstance().loadPieceImage(board.getFieldAtIndex(animatedPiece.getSrcField().getRowDesignation(), animatedPiece.getSrcField().getColumnDesignation()).getContentPiece()), animatedPiece.getX() + 4, animatedPiece.getY() + 3, CELL_SIZE * 0.85, CELL_SIZE * 0.85);
         }
-        /*if (move != null) {
-            this.paintMoveAnimation(move.getSourceColumn(), move.getSourceRow(), move.getDestColumn(), move.getDestColumn());
-        }*/
     }
 
     //Getter and Setter
@@ -142,15 +140,11 @@ public class BoardPanel extends Region {
         this.activePiece = activePiece;
     }
 
-    public void update(Move move) {
+    public void update() {
         canvas.getGraphicsContext2D().setStroke(Color.WHITE);
         canvas.getGraphicsContext2D().clearRect(0, 0, CELL_SIZE * (fields.length + 1),
                 CELL_SIZE * (fields[0].length + 1));
-        this.paintState(move);
-    }
-
-    public Field[][] getFields() {
-        return fields;
+        this.paintState();
     }
 
     public Game getGame() {

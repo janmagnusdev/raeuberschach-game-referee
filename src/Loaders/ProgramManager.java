@@ -52,13 +52,13 @@ public class ProgramManager {
      * Ermittelt den Wert des Attributs "Player" in der Manifest-Datei der
      * angegebenen jar-Datei
      */
-    public String getProgramClassnameFromManifest(String jarPathAndFilename) {
+    private String getProgramClassnameFromManifest(String jarPathAndFilename) {
         try {
             URL fileURL = new URL("file:" + jarPathAndFilename);
             URL u = new URL("jar", "", fileURL + "!/");
             JarURLConnection uc = (JarURLConnection) u.openConnection();
             Attributes attr = uc.getMainAttributes();
-            return attr != null ? attr.getValue("Player") //Attributes is a map
+            return attr != null ? attr.getValue("Player") // Attributes is a map
                     : null;
         } catch (IOException exc) {
             return null;
