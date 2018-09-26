@@ -71,7 +71,6 @@ public class GameGUI extends Application {
         root.setTop(toolAndMenuBox);
         root.setCenter(gameScrollPane);
         root.setBottom(messageLabel);
-        //alle Komponenten des GUIs werden der Vbox in den oberen Zeile hinzugefügt. Die Methoden erstellen diese Komponenten zur Laufzeit.
         Scene primaryScene = new Scene(root);
 
         stage.setOnCloseRequest((e) -> exitAllGUIs());
@@ -101,8 +100,7 @@ public class GameGUI extends Application {
         }
     }
 
-    private ToolBar createToolBar(GameGUI parent) { //erstellt die ToolBar unter dem Menü und fügt entsprechende
-        // Buttons hinzu.
+    private ToolBar createToolBar(GameGUI parent) {
         ToolBar toolBar = new ToolBar();
 
         Button newGuiButton = new Button();
@@ -177,7 +175,6 @@ public class GameGUI extends Application {
             exitGame.setOnAction(event -> parent.exitAllGUIs());
 
             gameMenu.getItems().addAll(newGame, printGame, new SeparatorMenuItem(), startGame, stopGame, new SeparatorMenuItem(), exitGame);
-            //Separator können nicht benutzt werden; addAll() erwartet MenuItems. Dazu gibt es die Klasse SeparatorMenuItem.
 
             this.getMenus().addAll(gameMenu, createPlayerMenu(true), createPlayerMenu(false));
 

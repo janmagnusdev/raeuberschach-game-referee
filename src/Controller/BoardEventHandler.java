@@ -29,7 +29,7 @@ public class BoardEventHandler implements EventHandler<MouseEvent>, Observer {
     }
 
     @Override
-    public void handle(MouseEvent event) {
+    public synchronized void handle(MouseEvent event) {
         if (event.getEventType() == MouseEvent.MOUSE_PRESSED) {
             actionOnMousePressed(event);
         } else if (event.getEventType() == MouseEvent.MOUSE_DRAGGED) {
@@ -39,7 +39,7 @@ public class BoardEventHandler implements EventHandler<MouseEvent>, Observer {
         }
     }
 
-    public void actionOnMousePressed(MouseEvent event) {
+    public synchronized void actionOnMousePressed(MouseEvent event) {
         IO.println(event.getX() + " getX");
         IO.println(event.getY() + " getY");
         IO.println(calcIndex(event.getX()));
@@ -59,7 +59,7 @@ public class BoardEventHandler implements EventHandler<MouseEvent>, Observer {
         boardPanel.update();
     }
 
-    public void actionOnMouseDragged(MouseEvent event) {
+    public synchronized void actionOnMouseDragged(MouseEvent event) {
         if (mouseIsInBoardRange(event) && boardPanel.getActivePiece() != null) {
             boardPanel.getActivePiece().setX(event.getX());
             boardPanel.getActivePiece().setY(event.getY());
@@ -70,22 +70,28 @@ public class BoardEventHandler implements EventHandler<MouseEvent>, Observer {
     }
 
     public void actionOnMouseReleased(MouseEvent event) {
-        if (mouseIsInBoardRange(event) && boardPanel.getActivePiece() != null) {
-            Move move = new Move(boardPanel.getActivePiece().getSrcField().getColumnDesignation() + 'a',
-                                 boardPanel.getActivePiece().getSrcField().getRowDesignation(),
-                                 calcIndex(boardPanel.getActivePiece().getX()) + 'a',
-                                 calcIndex(boardPanel.getActivePiece().getY()));
-            IO.print(move.getSourceColumn() + "\n" + move.getSourceRow() + "\n" + move.getDestColumn() + "\n" + move.getDestRow() + "\n");
-            IO.println("Move erstellt");
-            boardPanel.setActivePiece(null);
-            if (game.numberOfHumanPlayers() > 0) {
-                if (!game.getCurrentPlayer().isAI()) {
-                    HumanPlayer currentHumanPlayer = (HumanPlayer) game.getCurrentPlayer();
-                    currentHumanPlayer.setNextMove(move);
-                    if (game.getGameThread() != null) game.getGameThread().notify();
+        if (game.getGameThread() != null) {
+            synchronized (game.getGameThread()) {
+                if (mouseIsInBoardRange(event) && boardPanel.getActivePiece() != null) {
+                    Move move = new Move(boardPanel.getActivePiece().getSrcField().getColumnDesignation() + 'a',
+                                         boardPanel.getActivePiece().getSrcField().getRowDesignation(),
+                                         calcIndex(boardPanel.getActivePiece().getX()) + 'a',
+                                         calcIndex(boardPanel.getActivePiece().getY()));
+                    IO.print(move.getSourceColumn() + "\n" + move.getSourceRow() + "\n" + move.getDestColumn() + "\n" + move.getDestRow() + "\n");
+                    IO.println("Move erstellt");
+                    boardPanel.setActivePiece(null);
+                    if (game.numberOfHumanPlayers() > 0) {
+                        if (!game.getCurrentPlayer().isAI()) {
+                            HumanPlayer currentHumanPlayer = (HumanPlayer) game.getCurrentPlayer();
+                            currentHumanPlayer.setNextMove(move);
+                            if (game.getGameThread() != null)
+                                boardPanel.update();
+                                game.getGameThread().notify();
+                        }
+                    }
+                    boardPanel.update();
                 }
             }
-            boardPanel.update();
         }
     }
 
@@ -136,16 +142,19 @@ public class BoardEventHandler implements EventHandler<MouseEvent>, Observer {
     public void update(Observable o, Object arg) {
         if (arg != null) {
             Game x = (Game) o;
-            Thread animationThread = new AnimationThread(boardPanel, game, (Move) arg, 10); // muss an die erste
-            // Stelle geschrieben werden, da sonst der timeout von gameThread
-            // ausläuft und somit die Ausführung der Animation durch aufrufen von notifyObervers() in GameThread niemals erreicht wird
-            animationThread.start();
-            try {
-                animationThread.join();
-            } catch (InterruptedException e) {
-                game.getGameThread().interrupt();
+            if (!(game.getCurrentPlayer() instanceof HumanPlayer)) {
+                Thread animationThread = new AnimationThread(boardPanel, game, (Move) arg, 10); // muss an die erste
+                // Stelle geschrieben werden, da sonst der timeout von gameThread
+                // ausläuft und somit die Ausführung der Animation durch aufrufen von notifyObervers() in GameThread niemals erreicht wird
+                animationThread.start();
+                try {
+                    animationThread.join();
+                } catch (InterruptedException e) {
+                    game.getGameThread().interrupt();
+                }
             }
             this.validateAndExecuteMove((Move) arg);
+            boardPanel.update();
             try {
                 x.getGameThread().sleep(1000);
             } catch (InterruptedException e) {

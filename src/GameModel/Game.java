@@ -22,13 +22,31 @@ public class Game extends Observable {
         this.turnNumber = 1;
     }
 
-    private void runGame(Game game) {
-        game.gameThread = new Thread(){
+    private synchronized void runGame(Game game) {
+        game.gameThread = new Thread() {
             @Override
             public void run() {
                 synchronized (game) {
                     game.setCurrentPlayer(game.white);
                     game.setChanged();
+                    waitOnHumanIfNeeded();
+                    Move oldMove = game.getCurrentPlayer().getNextMove(null);
+                    notifyObservers(oldMove);
+                    while (!game.checkEndingByPieces(board.getFields())) {
+                        if (this.isInterrupted()) {
+                            break;
+                        }
+                        game.setChanged();
+                        waitOnHumanIfNeeded();
+                        oldMove = game.currentPlayer.getNextMove(oldMove);
+                        notifyObservers(oldMove);
+                    }
+                    game.gameThread = null;
+                }
+            }
+
+            private void waitOnHumanIfNeeded() {
+                synchronized (this) {
                     if (numberOfHumanPlayers() > 0) {
                         if (currentPlayer instanceof HumanPlayer) {
                             try {
@@ -38,27 +56,16 @@ public class Game extends Observable {
                             }
                         }
                     }
-                    Move oldMove = game.getCurrentPlayer().getNextMove(null);
-                    notifyObservers(oldMove);
-                    while (!game.checkEndingByPieces(board.getFields())) {
-                        if (this.isInterrupted()) {
-                            break;
-                        }
-                        game.setChanged();
-                        oldMove = game.currentPlayer.getNextMove(oldMove);
-                        notifyObservers(oldMove);
-                    }
-                    game.gameThread = null;
                 }
             }
         };
         game.gameThread.start();
     }
 
-    public void startSelectedGame(Player white, Player black){
-            this.white = white;
-            this.black = black;
-            runGame(this);
+    public void startSelectedGame(Player white, Player black) {
+        this.white = white;
+        this.black = black;
+        runGame(this);
     }
 
     //region ASCII
@@ -112,7 +119,6 @@ public class Game extends Observable {
     //endregion
 
     /**
-     *
      * @param fields The Field Array that is checked.
      * @return If one Player has Pieces, and the other doesn't, return true. False if both Players still have pieces. Also true if
      * nobody has pieces, which can't happen.
@@ -136,8 +142,10 @@ public class Game extends Observable {
 
     public int numberOfHumanPlayers() {
         int x = 0;
-        if (white.getClass().equals(HumanPlayer.class)) x++;
-        if (black.getClass().equals(HumanPlayer.class)) x++;
+        if (white.getClass().equals(HumanPlayer.class))
+            x++;
+        if (black.getClass().equals(HumanPlayer.class))
+            x++;
         return x;
     }
 

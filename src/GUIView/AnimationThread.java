@@ -3,6 +3,7 @@ package GUIView;
 import  GUIView.ComponentCreation.BoardPanel;
 import GameModel.Game;
 import GameModel.Move;
+import GameModel.Players.HumanPlayer;
 import javafx.application.Platform;
 
 public class AnimationThread extends Thread {
