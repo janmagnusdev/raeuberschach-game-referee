@@ -110,8 +110,12 @@ public class BoardPanel extends Region {
             gc.drawImage(ImageLoader.getInstance().loadPieceImage(fields[activePiece.getSrcField().getRowDesignation()][activePiece.getSrcField().getColumnDesignation()].getContentPiece()), activePiece.getX() - CELL_SIZE * 0.42, activePiece.getY() - CELL_SIZE * 0.42, CELL_SIZE * 0.85, CELL_SIZE * 0.85); //draws the pieceImage of the active piece where the mouse is
             gc.setStroke(Color.web("#00897b"));
             gc.setLineWidth(2.50);
-            gc.strokeRect((activePiece.getSrcField().getColumnDesignation() + 1) * CELL_SIZE + 3,
-                    (activePiece.getSrcField().getRowDesignation() + 1) * CELL_SIZE + 3, CELL_SIZE - 6,
+            int activePieceSrcFieldColumn = activePiece.getSrcField().getColumnDesignation();
+            int activePieceSrcFieldRow = activePiece.getSrcField().getRowDesignation();
+            int activePieceActualFieldColumn = calcIndex(activePiece.getX());
+            int activePieceActualFieldRow = calcIndex(activePiece.getY());
+            gc.strokeRect((activePieceSrcFieldColumn + 1) * CELL_SIZE + 3,
+                    (activePieceSrcFieldRow + 1) * CELL_SIZE + 3, CELL_SIZE - 6,
                     CELL_SIZE - 6); //highlighting of source field of active piece, if there is one
             gc.setStroke(Color.web("#43a047"));
             for (Field field : activePiece.getSrcField().getContentPiece().getPossibleFields()) {
@@ -119,7 +123,13 @@ public class BoardPanel extends Region {
                         (field.getRowDesignation() + 1) * CELL_SIZE + 3, CELL_SIZE - 6,
                         CELL_SIZE - 6);
             }
-            gc.setStroke(Color.web("#ff3d00")); //TODO Noch falsches Feld rot markieren, falls dem so ist
+            gc.setStroke(Color.web("#ff3d00")); // TODO Noch falsches Feld rot markieren, falls dem so ist
+            if (!board.getFieldAtIndex(activePieceSrcFieldRow, activePieceSrcFieldColumn).getContentPiece().getPossibleFields().contains(board.getFieldAtIndex(activePieceActualFieldRow,
+                    activePieceActualFieldColumn))) {
+                gc.strokeRect((activePieceActualFieldColumn + 1) * CELL_SIZE + 3,
+                        (activePieceActualFieldRow + 1) * CELL_SIZE + 3, CELL_SIZE - 6,
+                        CELL_SIZE - 6);
+            }
             gc.setLineWidth(1.00);
         }
         if (animatedPiece != null) {
@@ -134,6 +144,10 @@ public class BoardPanel extends Region {
 
     public ActivePiece getActivePiece() {
         return activePiece;
+    }
+
+    private int calcIndex(Double x) {
+        return ((int) ((x / CELL_SIZE) - 1));
     }
 
     public void setActivePiece(ActivePiece activePiece) {

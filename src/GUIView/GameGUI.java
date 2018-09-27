@@ -33,7 +33,7 @@ public class GameGUI extends Application {
     }
 
     private BoardPanel boardPanel;
-    private Label messageLabel; //TODO Messages müssen noch angezeigt werden; bspw. "Weiß ist am Zug!".
+    private Label messageLabel;
     private Game game;
     private MenuBar menuBar;
     private ToggleGroup tgWhite;
