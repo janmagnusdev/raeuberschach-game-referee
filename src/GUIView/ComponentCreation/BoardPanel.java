@@ -123,7 +123,7 @@ public class BoardPanel extends Region {
                         (field.getRowDesignation() + 1) * CELL_SIZE + 3, CELL_SIZE - 6,
                         CELL_SIZE - 6);
             }
-            gc.setStroke(Color.web("#ff3d00")); // TODO Noch falsches Feld rot markieren, falls dem so ist
+            gc.setStroke(Color.web("#ff3d00"));
             if (!board.getFieldAtIndex(activePieceSrcFieldRow, activePieceSrcFieldColumn).getContentPiece().getPossibleFields().contains(board.getFieldAtIndex(activePieceActualFieldRow,
                     activePieceActualFieldColumn))) {
                 gc.strokeRect((activePieceActualFieldColumn + 1) * CELL_SIZE + 3,
