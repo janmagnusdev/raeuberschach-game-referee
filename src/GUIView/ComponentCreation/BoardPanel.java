@@ -125,7 +125,8 @@ public class BoardPanel extends Region {
             }
             gc.setStroke(Color.web("#ff3d00"));
             if (!board.getFieldAtIndex(activePieceSrcFieldRow, activePieceSrcFieldColumn).getContentPiece().getPossibleFields().contains(board.getFieldAtIndex(activePieceActualFieldRow,
-                    activePieceActualFieldColumn))) {
+                    activePieceActualFieldColumn)) && board.getFieldAtIndex(activePieceActualFieldRow,
+                    activePieceActualFieldColumn) != activePiece.getSrcField()) {
                 gc.strokeRect((activePieceActualFieldColumn + 1) * CELL_SIZE + 3,
                         (activePieceActualFieldRow + 1) * CELL_SIZE + 3, CELL_SIZE - 6,
                         CELL_SIZE - 6);
