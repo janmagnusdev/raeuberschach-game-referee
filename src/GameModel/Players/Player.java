@@ -23,8 +23,8 @@ public abstract class Player {
     }
 
     public boolean canStrikeEnemy(Board board) {
-        for (int i = 0; i < 7; i++) {
-            for (int j = 0; j < 7; j++) {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
                 if (!board.getFieldAtIndex(i, j).isEmpty()) {
                     if (board.getFieldAtIndex(i, j).getContentPiece().getIsWhite() == this.isWhite()) {
                         if (board.getFieldAtIndex(i, j).getContentPiece().canStrikeEnemy()) {

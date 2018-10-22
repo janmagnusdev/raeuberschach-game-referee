@@ -3,7 +3,9 @@ package GameModel.Pieces;
 import GameModel.Board;
 import GameModel.Field;
 import GameModel.Move;
+import javafx.event.Event;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 //TODO Conversion of Pawn Pieces to another Piece when reached the last Field in its direction
@@ -47,8 +49,21 @@ public class PawnPiece extends Piece {
                 }
             }
         }
+
+       /* if (reachedLastField()) {
+            Class[] pieceClasses = {BishopPiece.class, KingPiece.class, KnightPiece.class, QueenPiece.class};
+            this = pieceClasses[(int) (Math.random() * 4) + 1].getDeclaredConstructor(boolean.class, Field.class).newInstance(this.getIsWhite(), this.getBelongingField());
+        } */
         return false;
     }
+
+   /* private boolean reachedLastField() {
+        if (this.getIsWhite()) {
+
+        } else {
+
+        }
+    } */
 
     @Override
     public ArrayList<Field> getPossibleFields() {
