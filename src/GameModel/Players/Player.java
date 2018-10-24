@@ -4,7 +4,6 @@ import GameModel.Board;
 import GameModel.Move;
 
 public abstract class Player {
-    // Access has to be protected because of the .jar programs
     protected boolean isAI;
     protected boolean isWhite;
 
