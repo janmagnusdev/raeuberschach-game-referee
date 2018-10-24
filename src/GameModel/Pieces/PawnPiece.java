@@ -9,7 +9,6 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 //TODO Conversion of Pawn Pieces to another Piece when reached the last Field in its direction
-//TODO GUI PopUp dafür
 public class PawnPiece extends Piece {
     private boolean wasMoved;
     private Field firstField;
@@ -26,44 +25,49 @@ public class PawnPiece extends Piece {
 
     @Override
     public boolean checkMove(Move move, Board board) {
+        boolean canDoMove = false;
         wasMoved = (firstField != this.getBelongingField().getBelongingBoard().getFieldAtIndex(move.getSourceRow(),
                 move.getSourceColumn()));
         int allowedDir = this.getIsWhite() ? -1 : 1;
         if (this.wasMoved && !canStrikeEnemy()) {
             if (move.getDestRow() - move.getSourceRow() == allowedDir && move.getDestColumn() ==
                     move.getSourceColumn()) {
-                return true;
+                canDoMove = true;
             }
         } else if (!this.wasMoved && !canStrikeEnemy()) {
             if ((move.getDestRow() - move.getSourceRow() == 2 * allowedDir || move.getDestRow() - move.getSourceRow() == allowedDir) && move.getDestColumn() == move.getSourceColumn() && !checkFieldForEnemy(move.getDestRow(), move.getDestColumn(), !this.getIsWhite())) {
-                return true;
+                canDoMove = true;
             }
         } else {
             if (this.checkFieldForEnemy(move.getSourceRow() + allowedDir, move.getSourceColumn() - 1, !this.getIsWhite())) {
                 if (move.getDestRow() == move.getSourceRow() + allowedDir && move.getDestColumn() == move.getSourceColumn() - 1) {
-                    return true;
+                    canDoMove = true;
                 }
             } else if (this.checkFieldForEnemy(move.getSourceRow() + allowedDir, move.getSourceColumn() + 1, !this.getIsWhite())) {
                 if (move.getDestRow() == move.getSourceRow() + allowedDir && move.getDestColumn() == move.getSourceColumn() + 1) {
-                    return true;
+                    canDoMove = true;
                 }
             }
         }
 
        /* if (reachedLastField()) {
-            Class[] pieceClasses = {BishopPiece.class, KingPiece.class, KnightPiece.class, QueenPiece.class};
-            this = pieceClasses[(int) (Math.random() * 4) + 1].getDeclaredConstructor(boolean.class, Field.class).newInstance(this.getIsWhite(), this.getBelongingField());
+           try {
+               this.getBelongingField().setContentPiece(QueenPiece.class.getDeclaredConstructor(boolean.class,
+                       Field.class).newInstance(this.getIsWhite(), this.getBelongingField()));
+           } catch (Throwable e) {
+               e.printStackTrace();
+           }
         } */
-        return false;
+        return canDoMove;
     }
 
    /* private boolean reachedLastField() {
         if (this.getIsWhite()) {
-
+            return this.getBelongingField().getRowDesignation() - 1 == 0;
         } else {
-
+            return this.getBelongingField().getRowDesignation() + 1 == 7;
         }
-    } */
+   } */
 
     @Override
     public ArrayList<Field> getPossibleFields() {
