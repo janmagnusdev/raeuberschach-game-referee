@@ -30,7 +30,6 @@ public abstract class Piece {
      **/
     public abstract ArrayList<Field> getPossibleFields();
 
-    //FIXME Pieces können noch über andere eigene Pieces rüberfliegen, wenn sie auch ein anderes schlagen können
     void addPossibleFieldsDirectionToArray(ArrayList<Field> possibleFields, int dirRow, int dirColumn) {
         {
             int j = this.getBelongingField().getColumnDesignation() + dirColumn;
@@ -45,6 +44,22 @@ public abstract class Piece {
                 } else if (checkFieldForEnemy(i, j, !this.getIsWhite())) {
                     possibleFields.add(this.getBelongingField().getBelongingBoard().getFieldAtIndex(i, j));
                     break;
+                } else if (checkFieldForEnemy(i, j, this.getIsWhite())) {
+                    break;
+                }
+            }
+        }
+    }
+
+    void addPossibleFieldToArrayList(ArrayList<Field> possibleFields, int i, int j) {
+        if (i >= 0 && i <= 7 && j >= 0 && j <= 7) {
+            if (!this.canStrikeEnemy()) {
+                if (this.getBelongingField().getBelongingBoard().getFieldAtIndex(i, j).isEmpty()) {
+                    possibleFields.add(this.getBelongingField().getBelongingBoard().getFieldAtIndex(i, j));
+                }
+            } else {
+                if (this.checkFieldForEnemy(i, j, !this.getIsWhite())) {
+                    possibleFields.add(this.getBelongingField().getBelongingBoard().getFieldAtIndex(i, j));
                 }
             }
         }
@@ -124,20 +139,6 @@ public abstract class Piece {
             }
         }
         return false;
-    }
-
-    void addPossibleFieldToArrayList(ArrayList<Field> possibleFields, int i, int j) {
-        if (i >= 0 && i <= 7 && j >= 0 && j <= 7) {
-            if (!this.canStrikeEnemy()) {
-                if (this.getBelongingField().getBelongingBoard().getFieldAtIndex(i, j).isEmpty()) {
-                    possibleFields.add(this.getBelongingField().getBelongingBoard().getFieldAtIndex(i, j));
-                }
-            } else {
-                if (this.checkFieldForEnemy(i, j, !this.getIsWhite())) {
-                    possibleFields.add(this.getBelongingField().getBelongingBoard().getFieldAtIndex(i, j));
-                }
-            }
-        }
     }
 
     //Getter and Setter

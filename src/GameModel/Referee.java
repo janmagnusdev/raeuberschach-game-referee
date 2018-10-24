@@ -6,7 +6,7 @@ public class Referee {
     private Board board;
     private Game game;
 
-    public Referee(Board board, Game game) { //Board übergeben ist obsolet, wenn der Referee das Game kennt; TODO
+    public Referee(Board board, Game game) {
         this.board = board;
         this.game = game;
     }
@@ -21,7 +21,7 @@ public class Referee {
      * instance of the piece in the source field of the move. Returns false otherwise.
      */
     public boolean checkMove(Move move, Player currentPlayer) {
-        if (move.isInBoardRange() && game.getCurrentPlayer().isWhite() == game.getBoard().getFieldAtIndex(move.getSourceRow(),
+        if (move.isInBoardRange() && game.getCurrentPlayer().isWhite() == board.getFieldAtIndex(move.getSourceRow(),
                 move.getSourceColumn()).getContentPiece().getIsWhite()) {
             return board.getFieldAtIndex(move.getSourceRow(), move.getSourceColumn()).getContentPiece().getPossibleFields().contains(board.getFieldAtIndex(move.getDestRow(), move.getDestColumn()));
         }
@@ -33,7 +33,7 @@ public class Referee {
      * @param player The player the move belongs to.
      * @return True if the target of the move is from the same color as the player. False otherwise. Also false if the target field is empty.
      */
-    private boolean isTargetFromSameColor(Move move, Player player) {
+    private boolean isTargetFromSameColorAsPlayer(Move move, Player player) {
         if (!board.getFieldAtIndex(move.getDestRow(), move.getDestColumn()).isEmpty()) {
             return (board.getFieldAtIndex(move.getDestRow(), move.getDestColumn()).getContentPiece().getIsWhite() == player.isWhite());
         } else {

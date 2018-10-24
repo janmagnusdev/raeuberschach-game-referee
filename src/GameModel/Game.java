@@ -1,6 +1,5 @@
 package GameModel;
 
-import GUIView.ComponentCreation.DisableButtonProperty;
 import GameModel.Players.AsciiPlayer;
 import GameModel.Players.HumanPlayer;
 import GameModel.Players.Player;
@@ -8,7 +7,7 @@ import assets.IO;
 
 import java.util.Observable;
 
-public class Game extends Observable { //Puts a whole game with all its components together
+public class Game extends Observable {
     private Board board;
     private Referee referee;
     private int turnNumber;
@@ -16,7 +15,6 @@ public class Game extends Observable { //Puts a whole game with all its componen
     private Player black = new HumanPlayer(false);
     private Player currentPlayer = white;
     private Thread gameThread;
-    private DisableButtonProperty gameActiveProperty;
 
     public Game(Board board) {
         this.board = board;
@@ -24,13 +22,14 @@ public class Game extends Observable { //Puts a whole game with all its componen
         this.turnNumber = 1;
     }
 
-    private void runGame(Game game) {
-        game.gameThread = new Thread(){
+    private synchronized void runGame(Game game) {
+        game.gameThread = new Thread() {
             @Override
             public void run() {
                 synchronized (game) {
                     game.setCurrentPlayer(game.white);
                     game.setChanged();
+                    waitOnHumanIfNeeded();
                     Move oldMove = game.getCurrentPlayer().getNextMove(null);
                     notifyObservers(oldMove);
                     while (!game.checkEndingByPieces(board.getFields())) {
@@ -38,22 +37,35 @@ public class Game extends Observable { //Puts a whole game with all its componen
                             break;
                         }
                         game.setChanged();
+                        waitOnHumanIfNeeded();
                         oldMove = game.currentPlayer.getNextMove(oldMove);
                         notifyObservers(oldMove);
                     }
                     game.gameThread = null;
                 }
             }
+
+            private void waitOnHumanIfNeeded() {
+                synchronized (this) {
+                    if (numberOfHumanPlayers() > 0) {
+                        if (currentPlayer instanceof HumanPlayer) {
+                            try {
+                                this.wait();
+                            } catch (InterruptedException e) {
+                                this.interrupt();
+                            }
+                        }
+                    }
+                }
+            }
         };
         game.gameThread.start();
     }
 
-    public void startSelectedAIGame(Player white, Player black){
-        if (white.isAI() && black.isAI()) {
-            this.white = white;
-            this.black = black;
-            runGame(this);
-        }
+    public void startSelectedGame(Player white, Player black) {
+        this.white = white;
+        this.black = black;
+        runGame(this);
     }
 
     //region ASCII
@@ -68,7 +80,7 @@ public class Game extends Observable { //Puts a whole game with all its componen
             board.printCurrentState();
             IO.println("Spieler " + currentPlayer + " ist am Zug!");
             nextMove = currentPlayer.getNextMove(null);
-            while (!nextMove.isInBoardRange()) { //eventuell an referee outsourcen; bessere objektorientierung
+            while (!nextMove.isInBoardRange()) {
                 IO.println("Der Zug ist nicht im Rahmen des Spielbretts!");
                 nextMove = currentPlayer.getNextMove(null);
             }
@@ -107,9 +119,8 @@ public class Game extends Observable { //Puts a whole game with all its componen
     //endregion
 
     /**
-     *
      * @param fields The Field Array that is checked.
-     * @return If one has Pieces, and the other doesn't, return true. False if both still have pieces. Also true if
+     * @return If one Player has Pieces, and the other doesn't, return true. False if both Players still have pieces. Also true if
      * nobody has pieces, which can't happen.
      */
     public boolean checkEndingByPieces(Field[][] fields) {
@@ -127,6 +138,15 @@ public class Game extends Observable { //Puts a whole game with all its componen
             }
         }
         return !(whiteHasPieces && blackHasPieces);
+    }
+
+    public int numberOfHumanPlayers() {
+        int x = 0;
+        if (white.getClass().equals(HumanPlayer.class))
+            x++;
+        if (black.getClass().equals(HumanPlayer.class))
+            x++;
+        return x;
     }
 
     //Getter and Setter

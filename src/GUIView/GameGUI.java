@@ -1,5 +1,6 @@
 package GUIView;
 
+import GameModel.Players.HumanPlayer;
 import GameModel.Players.Player;
 import Loaders.ProgramManager;
 import assets.IO;
@@ -21,19 +22,19 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 
 public class GameGUI extends Application {
+    // TODO Remove unnessecary Comments
 
     public static void main(String[] args) { //TODO Thread Safety!
         launch(args);
     }
 
     private BoardPanel boardPanel;
-    private Label messageLabel; //TODO Messages müssen noch angezeigt werden; bspw. "Weiß ist am Zug!".
+    private Label messageLabel;
     private Game game;
     private MenuBar menuBar;
     private ToggleGroup tgWhite;
@@ -43,6 +44,7 @@ public class GameGUI extends Application {
     private Button stopButton;
     private MenuItem startGame;
     private MenuItem stopGame;
+    private final String HUMAN_PLAYER_NAME = HumanPlayer.class.getName();
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -66,20 +68,14 @@ public class GameGUI extends Application {
         toolAndMenuBox.getChildren().addAll(menuBar, toolBar);
         toolAndMenuBox.setAlignment(Pos.CENTER);
         VBox.setVgrow(boardPanel, Priority.ALWAYS);
-        boardPanel.paintState(null);
+        boardPanel.paintState();
         root.setTop(toolAndMenuBox);
         root.setCenter(gameScrollPane);
         root.setBottom(messageLabel);
-        //alle Komponenten des GUIs werden der Vbox in den oberen Zeile hinzugefügt. Die Methoden erstellen diese Komponenten zur Laufzeit.
         Scene primaryScene = new Scene(root);
 
-        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            @Override
-            public void handle(WindowEvent e) {
-                exitAllGUIs();
-            }
-        });
-        stage.setTitle("Räuberschach V2.01-//-02");
+        stage.setOnCloseRequest((e) -> exitAllGUIs());
+        stage.setTitle("Räuberschach Game Referee");
         stage.setMaxHeight(1000);
         stage.setMaxWidth(1000);
         stage.setScene(primaryScene);
@@ -105,8 +101,7 @@ public class GameGUI extends Application {
         }
     }
 
-    private ToolBar createToolBar(GameGUI parent) { //erstellt die ToolBar unter dem Menü und fügt entsprechende
-        // Buttons hinzu.
+    private ToolBar createToolBar(GameGUI parent) {
         ToolBar toolBar = new ToolBar();
 
         Button newGuiButton = new Button();
@@ -133,7 +128,7 @@ public class GameGUI extends Application {
         return toolBar;
     }
 
-    //Getter
+    //Getters
     public BoardPanel getBoardPanel() {
         return boardPanel;
     }
@@ -177,28 +172,10 @@ public class GameGUI extends Application {
             startGame.setOnAction(startAIAIGameHandler());
             stopGame.setOnAction(stopGameThreadHandler());
 
-        /*DisableButtonProperty disableStartBean = new DisableButtonProperty();
-        disableStartBean.valueProperty().addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                startGame.setDisable(newValue);
-            }
-        });
-
-        DisableButtonProperty disableStopBean = new DisableButtonProperty();
-        disableStopBean.valueProperty().addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                stopGame.setDisable(newValue);
-
-            }
-        });*/
-
             MenuItem exitGame = createMenuItem("_Exit", "SHORTCUT + Q", null, null);
             exitGame.setOnAction(event -> parent.exitAllGUIs());
 
             gameMenu.getItems().addAll(newGame, printGame, new SeparatorMenuItem(), startGame, stopGame, new SeparatorMenuItem(), exitGame);
-            //Separator können nicht benutzt werden; addAll() erwartet MenuItems. Dazu gibt es die Klasse SeparatorMenuItem.
 
             this.getMenus().addAll(gameMenu, createPlayerMenu(true), createPlayerMenu(false));
 
@@ -235,7 +212,7 @@ public class GameGUI extends Application {
             }
             ToggleGroup tg = isWhite ? tgWhite : tgBlack;
 
-            RadioMenuItem playerButton = new RadioMenuItem("Player");
+            RadioMenuItem playerButton = new RadioMenuItem(HUMAN_PLAYER_NAME);
             playerButton.setAccelerator(KeyCombination.valueOf("SHORTCUT + H"));
             playerButton.setSelected(true);
             playerButton.setToggleGroup(tg);
@@ -260,17 +237,25 @@ public class GameGUI extends Application {
                     String whiteProgramClassname = radioWhite.getText();
                     RadioMenuItem radioBlack = (RadioMenuItem) tgBlack.getSelectedToggle();
                     String blackProgramClassname = radioBlack.getText();
+                    Class<?> whiteClass;
+                    Class<?> blackClass;
 
-                    if (!whiteProgramClassname.equals("Player") && !blackProgramClassname.equals("Player")) {
-                        //NOTIDEAL Noch wird einfach überprüft, ob einer der Spieler Mensch ist, über Classname Player.
-                        Class<?> whiteClass =
+                    if (whiteProgramClassname.equals(HUMAN_PLAYER_NAME)) {
+                        whiteClass = HumanPlayer.class;
+                    } else {
+                        whiteClass =
                                 ProgramManager.getInstance().loadClassFromProgramsFolderJar(whiteProgramClassname);
-                        Class<?> blackClass = ProgramManager.getInstance().loadClassFromProgramsFolderJar(blackProgramClassname);
+                    }
+                    if (blackProgramClassname.equals(HUMAN_PLAYER_NAME)) {
+                        blackClass = HumanPlayer.class;
+                    } else {
+                        blackClass = ProgramManager.getInstance().loadClassFromProgramsFolderJar(blackProgramClassname);
+                    }
                         try {
                             Constructor<?> csw = whiteClass.getDeclaredConstructor(boolean.class);
                             Constructor<?> csb = blackClass.getDeclaredConstructor(boolean.class);
-                            this.game.startSelectedAIGame((Player) csw.newInstance(true),
-                                                               (Player) csb.newInstance(false));
+                            this.game.startSelectedGame((Player) csw.newInstance(true),
+                                                        (Player) csb.newInstance(false));
                             startGame.setDisable(true);
                             stopGame.setDisable(false);
                             playButton.setDisable(true);
@@ -278,7 +263,6 @@ public class GameGUI extends Application {
                         } catch (Throwable e) {
                             e.printStackTrace();
                         }
-                    }
                 }
         };
     }
@@ -292,7 +276,7 @@ public class GameGUI extends Application {
                     playButton.setDisable(false);
                     stopButton.setDisable(true);
                     game.getBoard().setPiecesInitial();
-                    Platform.runLater(() -> boardPanel.update(null));
+                    Platform.runLater(() -> boardPanel.update());
                     game.setCurrentPlayer(game.getWhite());
                 }
             };
