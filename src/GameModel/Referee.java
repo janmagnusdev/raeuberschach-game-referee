@@ -33,7 +33,7 @@ public class Referee {
      * @param player The player the move belongs to.
      * @return True if the target of the move is from the same color as the player. False otherwise. Also false if the target field is empty.
      */
-    private boolean isTargetFromSameColor(Move move, Player player) {
+    private boolean isTargetFromSameColorAsPlayer(Move move, Player player) {
         if (!board.getFieldAtIndex(move.getDestRow(), move.getDestColumn()).isEmpty()) {
             return (board.getFieldAtIndex(move.getDestRow(), move.getDestColumn()).getContentPiece().getIsWhite() == player.isWhite());
         } else {

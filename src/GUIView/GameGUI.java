@@ -74,7 +74,7 @@ public class GameGUI extends Application {
         Scene primaryScene = new Scene(root);
 
         stage.setOnCloseRequest((e) -> exitAllGUIs());
-        stage.setTitle("Räuberschach V2.01-//-02");
+        stage.setTitle("Räuberschach Game Referee");
         stage.setMaxHeight(1000);
         stage.setMaxWidth(1000);
         stage.setScene(primaryScene);
@@ -127,7 +127,7 @@ public class GameGUI extends Application {
         return toolBar;
     }
 
-    //Getter
+    //Getters
     public BoardPanel getBoardPanel() {
         return boardPanel;
     }
