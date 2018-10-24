@@ -7,7 +7,7 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="Jan-MagnusKisterGameReferee" options="--add-modules=javafx.graphics,javafx.base,javafx.controls" />
+      <module name="EndabgabeJan-MagnusKisterReferee" options="--add-modules=javafx.graphics,javafx.base,javafx.controls" />
       <module name="programmierung-III" options="--add-modules=javafx.graphics,javafx.controls,javafx.base" />
     </option>
   </component>
