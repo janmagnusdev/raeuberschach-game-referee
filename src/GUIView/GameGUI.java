@@ -27,7 +27,7 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 
 public class GameGUI extends Application {
-    // TODO Remove unnessecary Comments
+    // TODO Remove unnessecary Commentss
 
     public static void main(String[] args) { //TODO Thread Safety!
         launch(args);
