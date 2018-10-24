@@ -7,7 +7,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 
 public class BoardCreation {
-    public BorderPane createBoardBorderPane() { //erstellt die mittlere Border Pane, die das Spiel-relevante UI beinhaltet.
+    public BorderPane createBoardBorderPane() {
         BorderPane borderPane = new BorderPane();
 
         Label playerALabel = new Label("Player A");

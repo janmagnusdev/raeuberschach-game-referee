@@ -56,7 +56,6 @@ public class Referee {
 
     @SuppressWarnings("Duplicates")
     public void doMove(Move move) {
-        //if statement sorgt dafür, dass die geschlagene Figur vom Brett entfernt wird; falls dort eine Figur steht
         if (board.getFieldAtIndex(move.getDestRow(), move.getDestColumn()).getContentPiece() != null) {
             board.getFieldAtIndex(move.getDestRow(), move.getDestColumn()).getContentPiece().setBelongingField(null);
             board.getFieldAtIndex(move.getDestRow(), move.getDestColumn()).setContentPiece(null);

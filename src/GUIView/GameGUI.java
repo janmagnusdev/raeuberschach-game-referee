@@ -282,7 +282,7 @@ public class GameGUI extends Application {
             };
         }
 
-        // UNUSED
+        /* not used
         private EventHandler<ActionEvent> pauseDummyDummyGameHandler() {
             return event -> {
                 this.getGame().getGameThread().interrupt();
@@ -291,5 +291,5 @@ public class GameGUI extends Application {
                 playButton.setDisable(false);
                 stopButton.setDisable(true);
             };
-        }
+        } */
     }

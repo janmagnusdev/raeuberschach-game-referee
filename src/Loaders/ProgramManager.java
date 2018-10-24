@@ -11,8 +11,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.jar.Attributes;
 
-// Singleton; Idea from Jannis Lehmann
-// In Cooperation with Danny Irrsack and Henri Baumann
+// Singleton; Idee von Jannis Lehmann
+// Zusammenarbeit mit Danny Irrsack und Henri Baumann
 public class ProgramManager {
     private static ProgramManager instance;
     private final String PROGRAMS_PATH = System.getProperty("user.dir") + "/programs"; // path relative to users working directory

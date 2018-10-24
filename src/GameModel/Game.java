@@ -77,7 +77,7 @@ public class Game extends Observable {
         currentPlayer = white;
         Move nextMove;
         for (; ; ) {
-            board.printCurrentState();
+            board.printCurrentStateToConsole();
             IO.println("Spieler " + currentPlayer + " ist am Zug!");
             nextMove = currentPlayer.getNextMove(null);
             while (!nextMove.isInBoardRange()) {
@@ -121,7 +121,7 @@ public class Game extends Observable {
     /**
      * @param fields The Field Array that is checked.
      * @return If one Player has Pieces, and the other doesn't, return true. False if both Players still have pieces. Also true if
-     * nobody has pieces, which can't happen.
+     * nobody has pieces, which can't happen under normal circumstances.
      */
     public boolean checkEndingByPieces(Field[][] fields) {
         boolean whiteHasPieces = false;

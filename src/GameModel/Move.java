@@ -6,7 +6,7 @@ public class Move {
     private final int destColumn;
     private final int destRow;
 
-    public Move (int sourceColumn, int sourceRow, int destColumn, int destRow) { // j an erster Stelle, i an zweiter!
+    public Move (int sourceColumn, int sourceRow, int destColumn, int destRow) {
         this.sourceColumn = sourceColumn - 'a';
         this.sourceRow = sourceRow;
         this.destColumn = destColumn - 'a';

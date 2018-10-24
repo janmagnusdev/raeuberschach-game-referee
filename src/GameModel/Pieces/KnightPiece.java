@@ -21,7 +21,7 @@ public class KnightPiece extends Piece {
         return ((Math.abs(move.getSourceRow() - move.getDestRow()) == 2 && Math
                 .abs(move.getSourceColumn() - move.getDestColumn()) == 1) || ((Math
                 .abs(move.getSourceRow() - move.getDestRow()) == 1 && Math.abs(move
-                .getSourceColumn() - move.getDestColumn()) == 2))); // Math.abs bei der letzten Berechnung vergessen
+                .getSourceColumn() - move.getDestColumn()) == 2)));
     }
 
     @Override
@@ -32,7 +32,7 @@ public class KnightPiece extends Piece {
         Board board = this.getBelongingField().getBelongingBoard();
         ArrayList<Field> possibleFields = new ArrayList<>();
 
-        //Im Uhrzeigersinn, beginnend bei 12 Uhr, mit dem Moveset des Knights
+        // clock-wise, starting at 12 o'clock
         this.addPossibleFieldToArrayList(possibleFields, selfRow - 2, selfColumn + 1);
         this.addPossibleFieldToArrayList(possibleFields, selfRow - 1, selfColumn + 2);
         this.addPossibleFieldToArrayList(possibleFields, selfRow + 1, selfColumn + 2);
@@ -52,7 +52,7 @@ public class KnightPiece extends Piece {
         int selfRow = this.getBelongingField().getRowDesignation();
         Board board = this.getBelongingField().getBelongingBoard();
 
-        //checkt im Uhrzeigersinn des Springers nach gegnern, startend bei 12 Uhr
+        // clock-wise, starting at 12 o'clock
         if (this.checkFieldForEnemy(selfRow - 2, selfColumn + 1, enemyIsWhite)) {
             return true;
         } else if (this.checkFieldForEnemy(selfRow - 1, selfColumn + 2, enemyIsWhite)) {

@@ -103,7 +103,7 @@ public abstract class Piece {
      * @param move The move the piece would perform.
      * @return True if there is a piece in the way diagonally. False otherwise.
      */
-    boolean isPieceInWayDiagonal(Move move) { //has to be i = 1, not i = 0; otherwise the own field would be checked, and of course return true
+    boolean isPieceInWayDiagonal(Move move) {
         int dirRow = move.getSourceRow() > move.getDestRow() ? -1 : 1;
         int dirColumn = move.getSourceColumn() > move.getDestColumn() ? -1 : 1;
         for (int i = 1; i < Math.abs(move.getSourceColumn() - move.getDestColumn()); i++) {
