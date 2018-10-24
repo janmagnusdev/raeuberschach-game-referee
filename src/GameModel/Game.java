@@ -8,6 +8,7 @@ import assets.IO;
 import java.util.Observable;
 
 public class Game extends Observable {
+    //TODO das spiel soll neu gestartet werden, wenn es beendet ist
     private Board board;
     private Referee referee;
     private int turnNumber;
