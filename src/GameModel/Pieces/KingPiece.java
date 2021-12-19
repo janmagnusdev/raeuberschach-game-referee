@@ -16,6 +16,7 @@ public class KingPiece extends Piece {
         }
     }
 
+    // TODO: Fix - King leads to buggy situations sometimes
     @Override
     public boolean checkMove(Move move, Board board) {
         //King can only move one field in each direction

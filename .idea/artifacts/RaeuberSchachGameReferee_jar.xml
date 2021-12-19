@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="RaeuberSchachGameReferee:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/RaeuberSchachGameReferee_jar</output-path>
+    <root id="archive" name="RaeuberSchachGameReferee.jar">
+      <element id="module-output" name="RaeuberSchachGameReferee" />
+    </root>
+  </artifact>
+</component>

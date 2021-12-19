@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="res"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry exported="true" kind="var" path="APPLICATION_HOME_DIR/jre64/lib/ext/jfxrt.jar"/>
-	<classpathentry kind="output" path="out/production/Jan-MagnusKisterGameReferee"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/temurin-1.8"/>
+	<classpathentry kind="src" path="/EndabgabeJan-MagnusKisterReferee/res"/>
+	<classpathentry kind="src" path="/EndabgabeJan-MagnusKisterReferee/src"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.USER_LIBRARY/lib"/>
+	<classpathentry kind="output" path="/bin"/>
 </classpath>
